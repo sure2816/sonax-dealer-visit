@@ -1,1 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sonax — Daily Dealer Visit Report</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Google Sans', Roboto, Arial, sans-serif; background: #f0ebf8; min-height: 100vh; padding: 24px 16px 60px; }
+  .form-container { max-width: 640px; margin: 0 auto; }
+  .form-header { background: #fff; border-radius: 12px; border-top: 10px solid #673ab7; padding: 28px 28px 24px; margin-bottom: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.12); }
+  .form-header h1 { font-size: 26px; font-weight: 500; color: #202124; margin-bottom: 10px; }
+  .form-header p { font-size: 14px; color: #444; line-height: 1.5; }
+  .form-card { background: #fff; border-radius: 12px; padding: 24px 28px; margin-bottom: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.12); }
+  .form-card.section-card { border-left: 4px solid #673ab7; }
+  .section-title { font-size: 18px; font-weight: 500; color: #673ab7; margin-bottom: 18px; }
+  .field-group { margin-bottom: 22px; }
+  .field-group:last-child { margin-bottom: 0; }
+  label { display: block; font-size: 14px; color: #202124; margin-bottom: 8px; font-weight: 400; }
+  label .required { color: #d93025; margin-left: 2px; }
+  select, input[type="text"], input[type="date"], textarea { width: 100%; padding: 10px 12px; border: 1px solid #dadce0; border-radius: 6px; font-size: 14px; color: #202124; background: #fff; outline: none; transition: border-color 0.2s; appearance: none; -webkit-appearance: none; }
+  select:focus, input:focus, textarea:focus { border-color: #673ab7; box-shadow: 0 0 0 2px rgba(103,58,183,0.15); }
+  select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23444' d='M1 1l5 5 5-5'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 32px; }
+  .region-display { padding: 10px 12px; border: 1px solid #dadce0; border-radius: 6px; font-size: 14px; background: #f8f9fa; min-height: 40px; }
+  textarea { resize: vertical; min-height: 80px; }
+  .checkbox-group { display: flex; flex-direction: column; gap: 10px; }
+  .checkbox-item { display: flex; align-items: center; gap: 10px; cursor: pointer; font-size: 14px; color: #202124; }
+  .checkbox-item input[type="checkbox"] { width: 18px; height: 18px; accent-color: #673ab7; cursor: pointer; flex-shrink: 0; }
+  .hidden { display: none; }
+  .company-selector { display: flex; gap: 12px; margin-top: 4px; }
+  .company-btn { flex: 1; padding: 12px; border: 2px solid #dadce0; border-radius: 8px; background: #fff; cursor: pointer; font-size: 14px; font-weight: 500; color: #5f6368; transition: all 0.2s; text-align: center; }
+  .company-btn:hover { border-color: #673ab7; color: #673ab7; }
+  .company-btn.active-msil { border-color: #1a73e8; background: #e8f0fe; color: #1a73e8; }
+  .company-btn.active-hyundai { border-color: #e53935; background: #fce8e6; color: #e53935; }
+  .submit-btn { background: #673ab7; color: #fff; border: none; padding: 12px 32px; border-radius: 6px; font-size: 15px; font-weight: 500; cursor: pointer; }
+  .submit-btn:hover { background: #5e35b1; }
+  .submit-btn:disabled { opacity: .6; cursor: not-allowed; }
+  .clear-btn { background: transparent; color: #673ab7; border: none; padding: 12px 20px; font-size: 15px; cursor: pointer; margin-left: 8px; }
+  .form-actions { display: flex; align-items: center; padding: 8px 0; }
+  .error-msg { color: #d93025; font-size: 12px; margin-top: 4px; display: none; }
+  .field-group.has-error select, .field-group.has-error input, .field-group.has-error textarea { border-color: #d93025; }
+  .field-group.has-error .error-msg { display: block; }
+  input[type="date"] { font-family: inherit; }
+</style>
+</head>
+<body>
+<div class="form-container">
 
+  <div class="form-header">
+    <h1>Sonax — Daily Dealer Visit Report</h1>
+    <p>Fill this form after every dealer visit. Takes less than 2 minutes.</p>
+  </div>
+
+  <div class="form-card">
+    <div class="field-group" id="fg-name">
+      <label>Your Name <span class="required">*</span></label>
+      <select id="name" onchange="autoRegion()">
+        <option value="">-- Select Your Name --</option>
+        <option>Virender</option><option>Sohan Lal</option><option>Jai Gupta</option>
+        <option>Prabat</option><option>Pradeep</option><option>Jitender</option>
+        <option>Ranadeep</option><option>Raj</option><option>Rohan</option><option>Majhar</option>
+        <option>Utpal</option><option>Bappa</option><option>Krishnendu</option>
+        <option>Ravi Tej</option><option>Mahesh</option><option>Karthik</option>
+        <option>Chandan</option><option>Akhil</option>
+      </select>
+      <div class="error-msg">Please select your name.</div>
+    </div>
+    <div class="field-group">
+      <label>Your Region</label>
+      <div class="region-display" id="region-display"><span style="color:#9aa0a6;font-size:13px;">Auto-filled when you select your name</span></div>
+      <input type="hidden" id="region" />
+    </div>
+    <div class="field-group" id="fg-date">
+      <label>Date of Visit <span class="required">*</span></label>
+      <input type="date" id="visit-date" />
+      <div style="font-size:12px;color:#9aa0a6;margin-top:4px;">Today's date is pre-filled — change if needed.</div>
+      <div class="error-msg">Please select a date.</div>
+    </div>
+    <div class="field-group" id="fg-company">
+      <label>Company <span class="required">*</span></label>
+      <div class="company-selector">
+        <button type="button" class="company-btn" id="btn-msil" onclick="selectCompany('MSIL')">🚗 MSIL (Maruti)</button>
+        <button type="button" class="company-btn" id="btn-hyundai" onclick="selectCompany('Hyundai')">🔷 Hyundai</button>
+      </div>
+      <div class="error-msg" id="company-error">Please select a company.</div>
+    </div>
+  </div>
+
+  <!-- MSIL SECTION -->
+  <div id="msil-section" class="hidden">
+    <div class="form-card section-card">
+      <div class="section-title">🚗 MSIL — Visit Details</div>
+      <div class="field-group" id="fg-msil-outlet">
+        <label>Dealer / Outlet Name <span class="required">*</span></label>
+        <input type="text" id="msil-outlet" placeholder="Enter dealer or outlet name" />
+        <div class="error-msg">Please enter the outlet name.</div>
+      </div>
+      <div class="field-group" id="fg-msil-sw">
+        <label>Showroom / Service <span class="required">*</span></label>
+        <select id="msil-sw"><option value="">-- Select --</option><option>Showroom</option><option>Service</option></select>
+        <div class="error-msg">Please select one.</div>
+      </div>
+      <div class="field-group" id="fg-msil-location">
+        <label>Location <span class="required">*</span></label>
+        <input type="text" id="msil-location" placeholder="Enter location" />
+        <div class="error-msg">Please enter the location.</div>
+      </div>
+      <div class="field-group" id="fg-msil-bucket">
+        <label>Dealer Bucket <span class="required">*</span></label>
+        <select id="msil-bucket">
+          <option value="">-- Select Bucket --</option>
+          <option>A — Large / High-Potential (Performing)</option>
+          <option>B — Large / High-Potential (Dormant)</option>
+          <option>C — Small / Low-Hierarchy (Fast Decision)</option>
+        </select>
+        <div class="error-msg">Please select dealer bucket.</div>
+      </div>
+      <div class="field-group" id="fg-msil-stage-before">
+        <label>Stage BEFORE This Visit <span class="required">*</span></label>
+        <select id="msil-stage-before">
+          <option value="">-- Select Stage --</option>
+          <option>Stage 0 — No engagement yet</option>
+          <option>Stage 1 — Met, interest shown</option>
+          <option>Stage 2 — Demo done / sample given</option>
+          <option>Stage 3 — Trial order placed</option>
+          <option>Stage 4 — Regular buyer</option>
+        </select>
+        <div class="error-msg">Please select stage.</div>
+      </div>
+      <div class="field-group" id="fg-msil-stage-after">
+        <label>Stage AFTER This Visit <span class="required">*</span></label>
+        <select id="msil-stage-after">
+          <option value="">-- Select Stage --</option>
+          <option>Stage 0 — No engagement yet</option>
+          <option>Stage 1 — Met, interest shown</option>
+          <option>Stage 2 — Demo done / sample given</option>
+          <option>Stage 3 — Trial order placed</option>
+          <option>Stage 4 — Regular buyer</option>
+        </select>
+        <div class="error-msg">Please select stage.</div>
+      </div>
+      <div class="field-group" id="fg-msil-tactic">
+        <label>Entry Tactic Used (select all that apply) <span class="required">*</span></label>
+        <div class="checkbox-group">
+          <label class="checkbox-item"><input type="checkbox" name="msil-tactic" value="A"> A — Demo-led entry (live product demo)</label>
+          <label class="checkbox-item"><input type="checkbox" name="msil-tactic" value="B"> B — Relationship / request approach</label>
+          <label class="checkbox-item"><input type="checkbox" name="msil-tactic" value="C"> C — Data-led pitch (sales data shown)</label>
+          <label class="checkbox-item"><input type="checkbox" name="msil-tactic" value="D"> D — Contractor / VAS connect</label>
+          <label class="checkbox-item"><input type="checkbox" name="msil-tactic" value="E"> E — MSIL target push angle</label>
+          <label class="checkbox-item"><input type="checkbox" name="msil-tactic" value="F"> F — Other</label>
+        </div>
+        <div class="error-msg" id="tactic-error">Please select at least one tactic.</div>
+      </div>
+      <div class="field-group" id="fg-msil-outcome">
+        <label>Key Outcome of This Visit <span class="required">*</span></label>
+        <select id="msil-outcome">
+          <option value="">-- Select Outcome --</option>
+          <option>No contact made</option>
+          <option>Met — no interest</option>
+          <option>Met — interest shown, follow-up needed</option>
+          <option>Demo given</option>
+          <option>Sample left</option>
+          <option>Order confirmed</option>
+          <option>Repeat order taken</option>
+          <option>Complaint / issue resolved</option>
+          <option>Lost to competitor</option>
+          <option>Other</option>
+        </select>
+        <div class="error-msg">Please select an outcome.</div>
+      </div>
+      <div class="field-group">
+        <label>Visit Notes <span style="color:#9aa0a6;">(optional)</span></label>
+        <textarea id="msil-notes" placeholder="Key observations, objections, competitor activity."></textarea>
+      </div>
+      <div class="field-group" id="fg-msil-next-action">
+        <label>Next Planned Action <span class="required">*</span></label>
+        <select id="msil-next-action">
+          <option value="">-- Select Action --</option>
+          <option>No follow-up needed</option>
+          <option>Call to follow up</option>
+          <option>Send product info / catalogue</option>
+          <option>Schedule next visit</option>
+          <option>Deliver sample / demo kit</option>
+          <option>Confirm order</option>
+          <option>Escalate to RM</option>
+        </select>
+        <div class="error-msg">Please select next action.</div>
+      </div>
+      <div class="field-group" id="fg-msil-contractor">
+        <label>Contractor Connect at This Outlet <span class="required">*</span></label>
+        <select id="msil-contractor">
+          <option value="">-- Select --</option>
+          <option>No contractor present / not relevant</option>
+          <option>Met contractor — no interest yet</option>
+          <option>Contractor engaged — demo / sample given</option>
+          <option>Contractor is active Sonax advocate</option>
+        </select>
+        <div class="error-msg">Please select contractor status.</div>
+      </div>
+      <div class="field-group">
+        <label>Planned Follow-Up Date</label>
+        <input type="date" id="msil-followup-date" />
+      </div>
+    </div>
+  </div>
+
+  <!-- HYUNDAI SECTION -->
+  <div id="hyundai-section" class="hidden">
+    <div class="form-card section-card" style="border-left-color:#e53935;">
+      <div class="section-title" style="color:#e53935;">🔷 Hyundai — Visit Details</div>
+      <div class="field-group" id="fg-hyu-outlet">
+        <label>Outlet Name <span class="required">*</span></label>
+        <input type="text" id="hyu-outlet" placeholder="Enter outlet name" />
+        <div class="error-msg">Please enter the outlet name.</div>
+      </div>
+      <div class="field-group" id="fg-hyu-sw">
+        <label>Showroom / Service <span class="required">*</span></label>
+        <select id="hyu-sw"><option value="">-- Select --</option><option>Showroom</option><option>Service</option></select>
+        <div class="error-msg">Please select one.</div>
+      </div>
+      <div class="field-group" id="fg-hyu-location">
+        <label>Location <span class="required">*</span></label>
+        <input type="text" id="hyu-location" placeholder="Enter location" />
+        <div class="error-msg">Please enter the location.</div>
+      </div>
+      <div class="field-group" id="fg-hyu-bucket">
+        <label>Dealer Bucket <span class="required">*</span></label>
+        <select id="hyu-bucket">
+          <option value="">-- Select Bucket --</option>
+          <option>A — Large / High-Potential (Performing)</option>
+          <option>B — Large / High-Potential (Dormant)</option>
+          <option>C — Small / Low-Hierarchy (Fast Decision)</option>
+        </select>
+        <div class="error-msg">Please select dealer bucket.</div>
+      </div>
+      <div class="field-group" id="fg-hyu-stage-before">
+        <label>Dealer Status BEFORE This Visit <span class="required">*</span></label>
+        <select id="hyu-stage-before">
+          <option value="">-- Select Status --</option>
+          <option>Stage 0 — No engagement yet</option>
+          <option>Stage 1 — Met, interest shown</option>
+          <option>Stage 2 — Demo done / sample given</option>
+          <option>Stage 3 — Trial order placed</option>
+          <option>Stage 4 — Regular buyer</option>
+        </select>
+        <div class="error-msg">Please select status.</div>
+      </div>
+      <div class="field-group" id="fg-hyu-stage-after">
+        <label>Dealer Status AFTER This Visit <span class="required">*</span></label>
+        <select id="hyu-stage-after">
+          <option value="">-- Select Status --</option>
+          <option>Stage 0 — No engagement yet</option>
+          <option>Stage 1 — Met, interest shown</option>
+          <option>Stage 2 — Demo done / sample given</option>
+          <option>Stage 3 — Trial order placed</option>
+          <option>Stage 4 — Regular buyer</option>
+        </select>
+        <div class="error-msg">Please select status.</div>
+      </div>
+      <div class="field-group" id="fg-hyu-outcome">
+        <label>Key Outcome of This Visit <span class="required">*</span></label>
+        <select id="hyu-outcome">
+          <option value="">-- Select Outcome --</option>
+          <option>No contact made</option>
+          <option>Met — no interest</option>
+          <option>Met — interest shown, follow-up needed</option>
+          <option>Demo given</option>
+          <option>Sample left</option>
+          <option>Order confirmed</option>
+          <option>Repeat order taken</option>
+          <option>Complaint / issue resolved</option>
+          <option>Lost to competitor</option>
+          <option>Other</option>
+        </select>
+        <div class="error-msg">Please select an outcome.</div>
+      </div>
+      <div class="field-group">
+        <label>Visit Notes <span style="color:#9aa0a6;">(optional)</span></label>
+        <textarea id="hyu-notes" placeholder="Key observations, objections, competitor activity."></textarea>
+      </div>
+      <div class="field-group" id="fg-hyu-next-action">
+        <label>Next Planned Action <span class="required">*</span></label>
+        <select id="hyu-next-action">
+          <option value="">-- Select Action --</option>
+          <option>No follow-up needed</option>
+          <option>Call to follow up</option>
+          <option>Send product info / catalogue</option>
+          <option>Schedule next visit</option>
+          <option>Deliver sample / demo kit</option>
+          <option>Confirm order</option>
+          <option>Escalate to RM</option>
+        </select>
+        <div class="error-msg">Please select next action.</div>
+      </div>
+      <div class="field-group">
+        <label>Planned Follow-Up Date</label>
+        <input type="date" id="hyu-followup-date" />
+      </div>
+    </div>
+  </div>
+
+  <div class="form-card">
+    <div class="form-actions">
+      <button class="submit-btn" id="submit-btn" onclick="submitForm()">Submit</button>
+      <button class="clear-btn" onclick="clearForm()">Clear form</button>
+    </div>
+    <p style="font-size:12px;color:#9aa0a6;margin-top:16px;">Never submit passwords through this form.</p>
+  </div>
+
+</div>
+
+<!-- Success Modal -->
+<div id="success-modal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.4);z-index:1000;align-items:center;justify-content:center;">
+  <div style="background:#fff;border-radius:12px;padding:40px 32px;max-width:400px;width:90%;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,0.2);">
+    <div style="font-size:48px;margin-bottom:16px;">&#x2705;</div>
+    <h2 style="font-size:20px;color:#202124;margin-bottom:10px;">Response Recorded</h2>
+    <p style="color:#5f6368;font-size:14px;margin-bottom:24px;">Your daily dealer visit report has been submitted successfully.</p>
+    <button onclick="clearForm()" style="background:#673ab7;color:#fff;border:none;padding:10px 28px;border-radius:6px;font-size:14px;cursor:pointer;">Submit Another Response</button>
+  </div>
+</div>
+
+<script>
+var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxV0zMAjuzS8enkEJoTQVo3DfPy-2V6pnN6BpxwpSQQ89cKq0Sq3whktMfuTUjqJ9YB/exec';
+
+document.addEventListener("DOMContentLoaded", function() {
+  document.getElementById("visit-date").value = new Date().toISOString().split("T")[0];
+});
+
+var regionMap = {
+  "Virender":"North","Sohan Lal":"North","Jai Gupta":"North","Prabat":"North","Pradeep":"North","Jitender":"North",
+  "Ranadeep":"West","Raj":"West","Rohan":"West","Majhar":"West",
+  "Utpal":"East","Bappa":"East","Krishnendu":"East",
+  "Ravi Tej":"South","Mahesh":"South","Karthik":"South","Chandan":"South","Akhil":"South"
+};
+var chipColor = {"North":"#1a73e8","South":"#e53935","East":"#f4511e","West":"#0b8043"};
+var selectedCompany = "";
+
+function autoRegion() {
+  var name = document.getElementById("name").value;
+  var region = regionMap[name] || "";
+  document.getElementById("region").value = region;
+  var d = document.getElementById("region-display");
+  d.innerHTML = region
+    ? '<span style="display:inline-block;padding:3px 12px;border-radius:16px;font-size:13px;font-weight:500;color:#fff;background:'+chipColor[region]+'">'+region+'</span>'
+    : '<span style="color:#9aa0a6;font-size:13px;">Auto-filled when you select your name</span>';
+}
+
+function selectCompany(c) {
+  selectedCompany = c;
+  document.getElementById("btn-msil").className = "company-btn" + (c==="MSIL" ? " active-msil" : "");
+  document.getElementById("btn-hyundai").className = "company-btn" + (c==="Hyundai" ? " active-hyundai" : "");
+  document.getElementById("msil-section").classList.toggle("hidden", c!=="MSIL");
+  document.getElementById("hyundai-section").classList.toggle("hidden", c!=="Hyundai");
+  document.getElementById("company-error").style.display = "none";
+  document.getElementById("fg-company").classList.remove("has-error");
+}
+
+function chk(id, fgId) {
+  var el = document.getElementById(id), fg = document.getElementById(fgId);
+  if (!el || !el.value.trim()) { fg.classList.add("has-error"); return false; }
+  fg.classList.remove("has-error"); return true;
+}
+
+function validate() {
+  var ok = true;
+  if (!chk("name","fg-name")) ok = false;
+  if (!chk("visit-date","fg-date")) ok = false;
+  if (!selectedCompany) {
+    document.getElementById("fg-company").classList.add("has-error");
+    document.getElementById("company-error").style.display = "block";
+    ok = false;
+  }
+  if (selectedCompany === "MSIL") {
+    ["msil-outlet","msil-sw","msil-location","msil-bucket","msil-stage-before",
+     "msil-stage-after","msil-outcome","msil-next-action","msil-contractor"
+    ].forEach(function(id) { if (!chk(id,"fg-"+id)) ok = false; });
+    var t = document.querySelectorAll('input[name="msil-tactic"]:checked');
+    if (!t.length) {
+      document.getElementById("fg-msil-tactic").classList.add("has-error");
+      document.getElementById("tactic-error").style.display = "block";
+      ok = false;
+    } else {
+      document.getElementById("fg-msil-tactic").classList.remove("has-error");
+      document.getElementById("tactic-error").style.display = "none";
+    }
+  }
+  if (selectedCompany === "Hyundai") {
+    ["hyu-outlet","hyu-sw","hyu-location","hyu-bucket","hyu-stage-before",
+     "hyu-stage-after","hyu-outcome","hyu-next-action"
+    ].forEach(function(id) { if (!chk(id,"fg-"+id)) ok = false; });
+  }
+  return ok;
+}
+
+function submitForm() {
+  if (!validate()) {
+    setTimeout(function() {
+      var e = document.querySelector(".has-error");
+      if (e) e.scrollIntoView({behavior:"smooth",block:"center"});
+    }, 50);
+    return;
+  }
+
+  var btn = document.getElementById("submit-btn");
+  btn.disabled = true;
+  btn.textContent = "Submitting...";
+
+  var tactics = Array.from(document.querySelectorAll('input[name="msil-tactic"]:checked')).map(function(c){return c.value;}).join(", ");
+
+  var data = {
+    name: document.getElementById("name").value,
+    region: document.getElementById("region").value,
+    visitDate: document.getElementById("visit-date").value,
+    company: selectedCompany,
+    outlet: selectedCompany==="MSIL" ? document.getElementById("msil-outlet").value : document.getElementById("hyu-outlet").value,
+    sw: selectedCompany==="MSIL" ? document.getElementById("msil-sw").value : document.getElementById("hyu-sw").value,
+    location: selectedCompany==="MSIL" ? document.getElementById("msil-location").value : document.getElementById("hyu-location").value,
+    bucket: selectedCompany==="MSIL" ? document.getElementById("msil-bucket").value : document.getElementById("hyu-bucket").value,
+    stageBefore: selectedCompany==="MSIL" ? document.getElementById("msil-stage-before").value : document.getElementById("hyu-stage-before").value,
+    stageAfter: selectedCompany==="MSIL" ? document.getElementById("msil-stage-after").value : document.getElementById("hyu-stage-after").value,
+    tactic: selectedCompany==="MSIL" ? tactics : "",
+    outcome: selectedCompany==="MSIL" ? document.getElementById("msil-outcome").value : document.getElementById("hyu-outcome").value,
+    notes: selectedCompany==="MSIL" ? document.getElementById("msil-notes").value : document.getElementById("hyu-notes").value,
+    nextAction: selectedCompany==="MSIL" ? document.getElementById("msil-next-action").value : document.getElementById("hyu-next-action").value,
+    contractor: selectedCompany==="MSIL" ? document.getElementById("msil-contractor").value : "",
+    followupDate: selectedCompany==="MSIL" ? document.getElementById("msil-followup-date").value : document.getElementById("hyu-followup-date").value
+  };
+
+  fetch(SCRIPT_URL, {
+    method: "POST",
+    mode: "no-cors",
+    headers: { "Content-Type": "text/plain" },
+    body: JSON.stringify(data)
+  }).then(function() {
+    document.getElementById("success-modal").style.display = "flex";
+    btn.disabled = false;
+    btn.textContent = "Submit";
+  }).catch(function() {
+    document.getElementById("success-modal").style.display = "flex";
+    btn.disabled = false;
+    btn.textContent = "Submit";
+  });
+}
+
+function clearForm() {
+  document.getElementById("success-modal").style.display = "none";
+  document.getElementById("name").value = "";
+  document.getElementById("region").value = "";
+  document.getElementById("region-display").innerHTML = '<span style="color:#9aa0a6;font-size:13px;">Auto-filled when you select your name</span>';
+  document.getElementById("visit-date").value = new Date().toISOString().split("T")[0];
+  selectedCompany = "";
+  document.getElementById("btn-msil").className = "company-btn";
+  document.getElementById("btn-hyundai").className = "company-btn";
+  document.getElementById("msil-section").classList.add("hidden");
+  document.getElementById("hyundai-section").classList.add("hidden");
+  ["msil-outlet","msil-sw","msil-location","msil-bucket","msil-stage-before","msil-stage-after",
+   "msil-outcome","msil-notes","msil-next-action","msil-contractor","msil-followup-date",
+   "hyu-outlet","hyu-sw","hyu-location","hyu-bucket","hyu-stage-before","hyu-stage-after",
+   "hyu-outcome","hyu-notes","hyu-next-action","hyu-followup-date"
+  ].forEach(function(id) { var el=document.getElementById(id); if(el) el.value=""; });
+  document.querySelectorAll('input[name="msil-tactic"]').forEach(function(cb){ cb.checked=false; });
+  document.querySelectorAll(".has-error").forEach(function(el){ el.classList.remove("has-error"); });
+  window.scrollTo(0,0);
+}
+</script>
+</body>
+</html>
