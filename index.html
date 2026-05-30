@@ -407,9 +407,10 @@ function submitForm() {
 
   var tactics = Array.from(document.querySelectorAll('input[name="msil-tactic"]:checked')).map(function(c){return c.value;}).join(", ");
 
+  var nameVal = document.getElementById("name").value;
   var data = {
-    name: document.getElementById("name").value,
-    region: document.getElementById("region").value,
+    name: nameVal,
+    region: regionMap[nameVal] || "",
     visitDate: document.getElementById("visit-date").value,
     company: selectedCompany,
     outlet: selectedCompany==="MSIL" ? document.getElementById("msil-outlet").value : document.getElementById("hyu-outlet").value,
