@@ -410,7 +410,7 @@ function submitForm() {
   var nameVal = document.getElementById("name").value;
   var data = {
     name: nameVal,
-    region: regionMap[nameVal] || "",
+    region: regionMap[nameVal] || "NO-REGION-FOUND",
     visitDate: document.getElementById("visit-date").value,
     company: selectedCompany,
     outlet: selectedCompany==="MSIL" ? document.getElementById("msil-outlet").value : document.getElementById("hyu-outlet").value,
