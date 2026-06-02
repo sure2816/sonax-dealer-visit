@@ -733,6 +733,10 @@ var DEALERS = [
 ['EAST','SAMBHALPUR','Odyssey Motors Pvt. Ltd.']
 ];
 
+// Load dealers from sheet on startup
+var DEALERS = [];
+fetch(SCRIPT_URL + '?action=dealers').then(function(r){ return r.json(); }).then(function(d){ DEALERS = d; }).catch(function(){});
+
 function dealerSearch(val, prefix) {
   var dd = document.getElementById(prefix+'-outlet-suggestions');
   if (val.length < 3) { dd.style.display='none'; return; }
