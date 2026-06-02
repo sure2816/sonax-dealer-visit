@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Sonax — Daily Dealer Visit Report</title>
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'Google Sans', Roboto, Arial, sans-serif; background: #f0ebf8; min-height: 100vh; padding: 24px 16px 60px; }
+  * { box-sizing: border-box; margin: 0; padding: 0; color-scheme: light; }
+  body { font-family: 'Google Sans', Roboto, Arial, sans-serif; background: #f0ebf8; min-height: 100vh; padding: 24px 16px 60px; color-scheme: light; }
   .form-container { max-width: 640px; margin: 0 auto; }
   .form-header { background: #fff; border-radius: 12px; border-top: 10px solid #673ab7; padding: 28px 28px 24px; margin-bottom: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.12); }
   .form-header h1 { font-size: 26px; font-weight: 500; color: #202124; margin-bottom: 10px; }
@@ -16,15 +16,15 @@
   .section-title { font-size: 18px; font-weight: 500; color: #673ab7; margin-bottom: 18px; }
   .field-group { margin-bottom: 22px; }
   .field-group:last-child { margin-bottom: 0; }
-  label { display: block; font-size: 14px; color: #202124; margin-bottom: 8px; font-weight: 400; }
+  label { display: block; font-size: 14px; color: #202124; margin-bottom: 8px; font-weight: 700; }
   label .required { color: #d93025; margin-left: 2px; }
-  select, input[type="text"], input[type="date"], textarea { width: 100%; padding: 10px 12px; border: 1px solid #dadce0; border-radius: 6px; font-size: 14px; color: #202124; background: #fff; outline: none; transition: border-color 0.2s; appearance: none; -webkit-appearance: none; }
+  select, input[type="text"], input[type="date"], textarea { width: 100%; padding: 10px 12px; border: 1px solid #dadce0; border-radius: 6px; font-size: 14px; color: #202124; background: #fff; outline: none; transition: border-color 0.2s; appearance: none; -webkit-appearance: none; color-scheme: light; }
+  select { background: #f8f9fa; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23444' d='M1 1l5 5 5-5'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 32px; }
   select:focus, input:focus, textarea:focus { border-color: #673ab7; box-shadow: 0 0 0 2px rgba(103,58,183,0.15); }
-  select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23444' d='M1 1l5 5 5-5'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 32px; }
   .region-display { padding: 10px 12px; border: 1px solid #dadce0; border-radius: 6px; font-size: 14px; background: #f8f9fa; min-height: 40px; }
   textarea { resize: vertical; min-height: 80px; }
-  .checkbox-group { display: flex; flex-direction: column; gap: 10px; }
-  .checkbox-item { display: flex; align-items: center; gap: 10px; cursor: pointer; font-size: 14px; color: #202124; }
+  .checkbox-group { display: flex; flex-direction: column; gap: 8px; }
+  .checkbox-item { display: flex; align-items: center; gap: 10px; cursor: pointer; font-size: 14px; color: #202124; font-weight: 400; padding: 8px 12px; border: 1px solid #dadce0; border-radius: 6px; background: #fff; }
   .checkbox-item input[type="checkbox"] { width: 18px; height: 18px; accent-color: #673ab7; cursor: pointer; flex-shrink: 0; }
   .hidden { display: none; }
   .company-selector { display: flex; gap: 12px; margin-top: 4px; }
@@ -58,7 +58,7 @@
 
   <div class="form-card">
     <div class="field-group" id="fg-name">
-      <label>Your Name <span class="required">*</span></label>
+      <label>Your name <span class="required">*</span></label>
       <select id="name" onchange="autoRegion()">
         <option value="">-- Select Your Name --</option>
         <option>Virender</option><option>Sohan Lal</option><option>Jai Gupta</option>
@@ -71,18 +71,19 @@
       <div class="error-msg">Please select your name.</div>
     </div>
     <div class="field-group">
-      <label>Your Region</label>
+      <label>Your region</label>
       <div class="region-display" id="region-display"><span style="color:#9aa0a6;font-size:13px;">Auto-filled when you select your name</span></div>
       <input type="hidden" id="region" />
     </div>
     <div class="field-group" id="fg-date">
-      <label>Date of Visit <span class="required">*</span></label>
+      <label>Date of visit <span class="required">*</span></label>
       <input type="date" id="visit-date" />
       <div style="font-size:12px;color:#9aa0a6;margin-top:4px;">Today's date is pre-filled — change if needed.</div>
       <div class="error-msg">Please select a date.</div>
     </div>
     <div class="field-group" id="fg-company">
       <label>Company <span class="required">*</span></label>
+
       <div class="company-selector">
         <button type="button" class="company-btn" id="btn-msil" onclick="selectCompany('MSIL')">🚗 MSIL (Maruti)</button>
         <button type="button" class="company-btn" id="btn-hyundai" onclick="selectCompany('Hyundai')">🔷 Hyundai</button>
@@ -96,17 +97,12 @@
     <div class="form-card section-card">
       <div class="section-title">🚗 MSIL — Visit Details</div>
       <div class="field-group" id="fg-msil-outlet">
-        <label>Dealer / Outlet Name <span class="required">*</span></label>
+        <label>Dealer / outlet name <span class="required">*</span></label>
         <div style="position:relative;">
           <input type="text" id="msil-outlet" placeholder="Type 3 letters to search dealer..." autocomplete="off" oninput="dealerSearch(this.value,'msil')" />
           <div id="msil-outlet-suggestions" class="ac-dropdown"></div>
         </div>
         <div class="error-msg">Please enter the outlet name.</div>
-      </div>
-      <div class="field-group" id="fg-msil-sw">
-        <label>Showroom / Service <span class="required">*</span></label>
-        <select id="msil-sw"><option value="">-- Select --</option><option>Showroom</option><option>Service</option></select>
-        <div class="error-msg">Please select one.</div>
       </div>
       <div class="field-group" id="fg-msil-location">
         <label>Location <span class="required">*</span></label>
@@ -116,100 +112,105 @@
         </div>
         <div class="error-msg">Please enter the location.</div>
       </div>
+      <div class="field-group" id="fg-msil-sw">
+        <label>Showroom / service <span class="required">*</span></label>
+        <select id="msil-sw"><option value="">-- Select --</option><option>Showroom</option><option>Service</option></select>
+        <div class="error-msg">Please select one.</div>
+      </div>
       <div class="field-group" id="fg-msil-bucket">
-        <label>Dealer Bucket <span class="required">*</span></label>
+        <label>Dealer size <span class="required">*</span></label>
         <select id="msil-bucket">
-          <option value="">-- Select Bucket --</option>
+          <option value="">-- Select --</option>
           <option>A — Large / High-Potential (Performing)</option>
           <option>B — Large / High-Potential (Dormant)</option>
-          <option>C — Small / Low-Hierarchy (Fast Decision)</option>
+          <option>C — Small / (Single Person decision)</option>
         </select>
-        <div class="error-msg">Please select dealer bucket.</div>
+        <div class="error-msg">Please select dealer size.</div>
       </div>
       <div class="field-group" id="fg-msil-stage-before">
-        <label>Stage BEFORE This Visit <span class="required">*</span></label>
+        <label>Stage before this visit <span class="required">*</span></label>
         <select id="msil-stage-before">
           <option value="">-- Select Stage --</option>
-          <option>Stage 0 — No engagement yet</option>
-          <option>Stage 1 — Met, interest shown</option>
-          <option>Stage 2 — Demo done / sample given</option>
-          <option>Stage 3 — Trial order placed</option>
           <option>Stage 4 — Regular buyer</option>
+          <option>Stage 3 — Trial order placed</option>
+          <option>Stage 2 — Demo done / sample given</option>
+          <option>Stage 1 — No interest yet</option>
+          <option>Stage 0 — No business yet</option>
         </select>
         <div class="error-msg">Please select stage.</div>
       </div>
       <div class="field-group" id="fg-msil-stage-after">
-        <label>Stage AFTER This Visit <span class="required">*</span></label>
+        <label>Stage after this visit <span class="required">*</span></label>
         <select id="msil-stage-after">
           <option value="">-- Select Stage --</option>
-          <option>Stage 0 — No engagement yet</option>
-          <option>Stage 1 — Met, interest shown</option>
-          <option>Stage 2 — Demo done / sample given</option>
-          <option>Stage 3 — Trial order placed</option>
           <option>Stage 4 — Regular buyer</option>
+          <option>Stage 3 — Trial order placed</option>
+          <option>Stage 2 — Demo done / sample given</option>
+          <option>Stage 1 — No interest yet</option>
+          <option>Stage 0 — No business yet</option>
         </select>
         <div class="error-msg">Please select stage.</div>
       </div>
       <div class="field-group" id="fg-msil-tactic">
-        <label>Entry Tactic Used (select all that apply) <span class="required">*</span></label>
+        <label>Dealer engagement approach (select all that apply) <span class="required">*</span></label>
         <div class="checkbox-group">
-          <label class="checkbox-item"><input type="checkbox" name="msil-tactic" value="A"> A — Demo-led entry (live product demo)</label>
-          <label class="checkbox-item"><input type="checkbox" name="msil-tactic" value="B"> B — Relationship / request approach</label>
-          <label class="checkbox-item"><input type="checkbox" name="msil-tactic" value="C"> C — Data-led pitch (sales data shown)</label>
-          <label class="checkbox-item"><input type="checkbox" name="msil-tactic" value="D"> D — Contractor / VAS connect</label>
-          <label class="checkbox-item"><input type="checkbox" name="msil-tactic" value="E"> E — MSIL target push angle</label>
-          <label class="checkbox-item"><input type="checkbox" name="msil-tactic" value="F"> F — Other</label>
+          <label class="checkbox-item"><input type="checkbox" name="msil-tactic" value="Product demonstration"> Product demonstration</label>
+          <label class="checkbox-item"><input type="checkbox" name="msil-tactic" value="Existing relationship discussion"> Existing relationship discussion</label>
+          <label class="checkbox-item"><input type="checkbox" name="msil-tactic" value="Business performance discussion"> Business performance discussion</label>
+          <label class="checkbox-item"><input type="checkbox" name="msil-tactic" value="Contractor/partner referral"> Contractor/partner referral</label>
+          <label class="checkbox-item"><input type="checkbox" name="msil-tactic" value="MSIL business opportunity"> MSIL business opportunity</label>
+          <label class="checkbox-item"><input type="checkbox" name="msil-tactic" value="Other"> Other</label>
         </div>
-        <div class="error-msg" id="tactic-error">Please select at least one tactic.</div>
+        <div class="error-msg" id="tactic-error">Please select at least one approach.</div>
       </div>
       <div class="field-group" id="fg-msil-outcome">
-        <label>Key Outcome of This Visit <span class="required">*</span></label>
+        <label>Visit outcome <span class="required">*</span></label>
         <select id="msil-outcome">
           <option value="">-- Select Outcome --</option>
-          <option>No contact made</option>
-          <option>Met — no interest</option>
-          <option>Met — interest shown, follow-up needed</option>
-          <option>Demo given</option>
-          <option>Sample left</option>
+          <option>Repeat order received</option>
           <option>Order confirmed</option>
-          <option>Repeat order taken</option>
-          <option>Complaint / issue resolved</option>
-          <option>Lost to competitor</option>
+          <option>Product demonstration completed</option>
+          <option>Interest shown — follow-up required</option>
+          <option>Issue resolved</option>
+          <option>No immediate interest</option>
+          <option>Competitor activity observed</option>
           <option>Other</option>
         </select>
         <div class="error-msg">Please select an outcome.</div>
       </div>
       <div class="field-group">
-        <label>Visit Notes <span style="color:#9aa0a6;">(optional)</span></label>
+        <label>Visit notes <span style="color:#9aa0a6;font-weight:400;">(optional)</span></label>
         <textarea id="msil-notes" placeholder="Key observations, objections, competitor activity."></textarea>
       </div>
       <div class="field-group" id="fg-msil-next-action">
-        <label>Next Planned Action <span class="required">*</span></label>
+        <label>Next planned action <span class="required">*</span></label>
         <select id="msil-next-action">
           <option value="">-- Select Action --</option>
-          <option>No follow-up needed</option>
-          <option>Call to follow up</option>
-          <option>Send product info / catalogue</option>
+          <option>No further action required</option>
+          <option>Follow-up call</option>
           <option>Schedule next visit</option>
-          <option>Deliver sample / demo kit</option>
-          <option>Confirm order</option>
-          <option>Escalate to RM</option>
+          <option>Order confirmation</option>
+          <option>Seek RM support</option>
+          <option>Other</option>
         </select>
         <div class="error-msg">Please select next action.</div>
       </div>
       <div class="field-group" id="fg-msil-contractor">
-        <label>Contractor Connect at This Outlet <span class="required">*</span></label>
+        <label>Contractor at outlet <span class="required">*</span></label>
         <select id="msil-contractor">
           <option value="">-- Select --</option>
-          <option>No contractor present / not relevant</option>
-          <option>Met contractor — no interest yet</option>
-          <option>Contractor engaged — demo / sample given</option>
-          <option>Contractor is active Sonax advocate</option>
+          <option>Active Sonax advocate</option>
+          <option>Contractor trial initiated</option>
+          <option>Met contractor — interest shown</option>
+          <option>Met contractor — no interest</option>
+          <option>No contractor</option>
+          <option>Follow-up required</option>
+          <option>Other</option>
         </select>
         <div class="error-msg">Please select contractor status.</div>
       </div>
       <div class="field-group">
-        <label>Planned Follow-Up Date</label>
+        <label>Planned follow-up date</label>
         <input type="date" id="msil-followup-date" />
       </div>
     </div>
@@ -220,56 +221,56 @@
     <div class="form-card section-card" style="border-left-color:#e53935;">
       <div class="section-title" style="color:#e53935;">🔷 Hyundai — Visit Details</div>
       <div class="field-group" id="fg-hyu-outlet">
-        <label>Outlet Name <span class="required">*</span></label>
+        <label>Outlet name <span class="required">*</span></label>
         <input type="text" id="hyu-outlet" placeholder="Enter outlet name" />
         <div class="error-msg">Please enter the outlet name.</div>
-      </div>
-      <div class="field-group" id="fg-hyu-sw">
-        <label>Showroom / Service <span class="required">*</span></label>
-        <select id="hyu-sw"><option value="">-- Select --</option><option>Showroom</option><option>Service</option></select>
-        <div class="error-msg">Please select one.</div>
       </div>
       <div class="field-group" id="fg-hyu-location">
         <label>Location <span class="required">*</span></label>
         <input type="text" id="hyu-location" placeholder="Enter location" />
         <div class="error-msg">Please enter the location.</div>
       </div>
+      <div class="field-group" id="fg-hyu-sw">
+        <label>Showroom / service <span class="required">*</span></label>
+        <select id="hyu-sw"><option value="">-- Select --</option><option>Showroom</option><option>Service</option></select>
+        <div class="error-msg">Please select one.</div>
+      </div>
       <div class="field-group" id="fg-hyu-bucket">
-        <label>Dealer Bucket <span class="required">*</span></label>
+        <label>Dealer size <span class="required">*</span></label>
         <select id="hyu-bucket">
-          <option value="">-- Select Bucket --</option>
+          <option value="">-- Select --</option>
           <option>A — Large / High-Potential (Performing)</option>
           <option>B — Large / High-Potential (Dormant)</option>
-          <option>C — Small / Low-Hierarchy (Fast Decision)</option>
+          <option>C — Small / (Single Person decision)</option>
         </select>
-        <div class="error-msg">Please select dealer bucket.</div>
+        <div class="error-msg">Please select dealer size.</div>
       </div>
       <div class="field-group" id="fg-hyu-stage-before">
-        <label>Dealer Status BEFORE This Visit <span class="required">*</span></label>
+        <label>Dealer status before this visit <span class="required">*</span></label>
         <select id="hyu-stage-before">
           <option value="">-- Select Status --</option>
-          <option>Stage 0 — No engagement yet</option>
-          <option>Stage 1 — Met, interest shown</option>
-          <option>Stage 2 — Demo done / sample given</option>
-          <option>Stage 3 — Trial order placed</option>
           <option>Stage 4 — Regular buyer</option>
+          <option>Stage 3 — Trial order placed</option>
+          <option>Stage 2 — Demo done / sample given</option>
+          <option>Stage 1 — No interest yet</option>
+          <option>Stage 0 — No business yet</option>
         </select>
         <div class="error-msg">Please select status.</div>
       </div>
       <div class="field-group" id="fg-hyu-stage-after">
-        <label>Dealer Status AFTER This Visit <span class="required">*</span></label>
+        <label>Dealer status after this visit <span class="required">*</span></label>
         <select id="hyu-stage-after">
           <option value="">-- Select Status --</option>
-          <option>Stage 0 — No engagement yet</option>
-          <option>Stage 1 — Met, interest shown</option>
-          <option>Stage 2 — Demo done / sample given</option>
-          <option>Stage 3 — Trial order placed</option>
           <option>Stage 4 — Regular buyer</option>
+          <option>Stage 3 — Trial order placed</option>
+          <option>Stage 2 — Demo done / sample given</option>
+          <option>Stage 1 — No interest yet</option>
+          <option>Stage 0 — No business yet</option>
         </select>
         <div class="error-msg">Please select status.</div>
       </div>
       <div class="field-group" id="fg-hyu-outcome">
-        <label>Key Outcome of This Visit <span class="required">*</span></label>
+        <label>Visit outcome <span class="required">*</span></label>
         <select id="hyu-outcome">
           <option value="">-- Select Outcome --</option>
           <option>No contact made</option>
@@ -286,11 +287,11 @@
         <div class="error-msg">Please select an outcome.</div>
       </div>
       <div class="field-group">
-        <label>Visit Notes <span style="color:#9aa0a6;">(optional)</span></label>
+        <label>Visit notes <span style="color:#9aa0a6;font-weight:400;">(optional)</span></label>
         <textarea id="hyu-notes" placeholder="Key observations, objections, competitor activity."></textarea>
       </div>
       <div class="field-group" id="fg-hyu-next-action">
-        <label>Next Planned Action <span class="required">*</span></label>
+        <label>Next planned action <span class="required">*</span></label>
         <select id="hyu-next-action">
           <option value="">-- Select Action --</option>
           <option>No follow-up needed</option>
@@ -304,7 +305,7 @@
         <div class="error-msg">Please select next action.</div>
       </div>
       <div class="field-group">
-        <label>Planned Follow-Up Date</label>
+        <label>Planned follow-up date</label>
         <input type="date" id="hyu-followup-date" />
       </div>
     </div>
@@ -338,10 +339,14 @@ var DEALERS = [
 ['SOUTH','CHITTOOR','Bhargavi Automobiles Pvt. Ltd'],
 ['SOUTH','ELURU','REDDY & REDDY MOTORS'],
 ['SOUTH','HYDERABAD','R K S Motors Pvt. Ltd.'],
+['SOUTH','HYDERABAD','VARUN MOTORS PVT.LTD.'],
 ['SOUTH','HYDERABAD','Sai Service Station Ltd'],
 ['SOUTH','HYDERABAD','Varun Motors Pvt Limited'],
 ['SOUTH','HYDERABAD','Adarsha Automotives Pvt Ltd'],
 ['SOUTH','HYDERABAD','Kalyani Motors P. Ltd.'],
+['SOUTH','HYDERABAD','VARUN MOTORS PVT LTD'],
+['SOUTH','HYDERABAD','SAI SERVICE PVT LTD'],
+['SOUTH','HYDERABAD','KALYANI MOTORS PVT.LTD.'],
 ['SOUTH','KAKINADA','S B MOTOR CORPORATION'],
 ['SOUTH','KARIMNAGAR','ADARSHA AUTO WORLD PVT LTD'],
 ['SOUTH','MACHLIPATNAM','The Mithra Agencies'],
@@ -349,13 +354,16 @@ var DEALERS = [
 ['SOUTH','NIRMAL','Adarsha Automotives Pvt Ltd'],
 ['SOUTH','NIZAMABAD','Varun Motors Pvt Limited'],
 ['SOUTH','RAJAHMUNDRY','S B MOTOR CORPORATION'],
+['SOUTH','RAJAHMUNDRY','VARUN MOTORS PVT LTD'],
 ['SOUTH','SECUNDERABAD','Autofin Limited'],
 ['SOUTH','VIJAYAWADA','Varun Motors Pvt Limited'],
 ['SOUTH','VIJAYAWADA','Santosh Automobiles'],
+['SOUTH','VIJAYAWADA','VARUN MOTORS PVT LTD'],
 ['SOUTH','VIJAYAWADA','ADVANCE AUTO PARTS'],
 ['SOUTH','VISHAKHAPATNAM','VARUN MOTORS PVT. LTD.'],
 ['SOUTH','VISHAKHAPATNAM','JAYABHERI AUTOMOTIVES PVT. LTD.'],
 ['SOUTH','WARANGAL','Adarsha Automotives Pvt Ltd'],
+['SOUTH','WARANGAL','ADARSHA AUTO WORLD PVT LTD'],
 ['SOUTH','WARRANGAL','WIN MOTORS (BHADRAKALI AUTOCARE'],
 ['SOUTH','BAGALKOT','Vijay Motowings'],
 ['SOUTH','BANGALORE','Mandovi Motors Pvt. Ltd.'],
@@ -363,25 +371,42 @@ var DEALERS = [
 ['SOUTH','BANGALORE','Kalyani Motors P. Ltd.'],
 ['SOUTH','BANGALORE','Bimal Auto Agency India Pvt Ltd'],
 ['SOUTH','BANGALORE','Suraksha Car Care Centre'],
+['SOUTH','BANGALORE','VARUN'],
 ['SOUTH','BANGALORE','Kataria Automobiles Limited'],
+['SOUTH','BANGALORE','BIMAL AUTO AGENCY INDIA PVT. LTD.'],
+['SOUTH','BANGALORE','SURAKSHAA CAR CARE PVT LTD'],
+['SOUTH','BANGALORE','M/S VARUN MOTORS PVT LTD'],
+['SOUTH','BANGALORE','KALYANI MOTORS PVT LTD'],
+['SOUTH','BANGALORE','MANDOVI MOTORS PVT LTD'],
+['SOUTH','BANGALORE','PRATHAM MOTORS PVT LTD'],
+['SOUTH','BANGALORE','VARUN MOTORS PVT LTD'],
 ['SOUTH','BELGAUM','Shantesh Motors'],
 ['SOUTH','BELLARY','K.P.F. PVT. LTD.'],
 ['SOUTH','CHITRADURGA','Saketh Automobiles'],
 ['SOUTH','GULBARGA','Lahoti'],
+['SOUTH','GULBARGA','LAHOTI MOTORS PVT LTD'],
 ['SOUTH','HASSAN','Venkat Motors'],
 ['SOUTH','HUBLI','Revankar Motors'],
+['SOUTH','HUBLI','RNS MOTORS PVT LTD'],
 ['SOUTH','KARWAR','Bharath Auto Cars Pvt Ltd'],
 ['SOUTH','MANGALORE','Mandovi Motors Pvt. Ltd.'],
 ['SOUTH','MANGALORE','Bharath Auto Cars Pvt Ltd'],
+['SOUTH','MANGALORE','MANDOVI MOTORS PVT LTD.'],
+['SOUTH','MANGALORE','BHARATH AUTO CARS PVT. LTD.'],
 ['SOUTH','MYSORE','Mandovi Motors Pvt. Ltd.'],
 ['SOUTH','MYSORE','Kalyani Motors P. Ltd.'],
+['SOUTH','MYSORE','MANDOVI MOTORS PVT LTD'],
 ['SOUTH','RAICHUR','Muneer Enterprises (P) Ltd.'],
 ['SOUTH','TUMKUR','Saketh Automobiles'],
 ['SOUTH','UDUPI','Abharan Motors'],
+['SOUTH','UDUPI','ABHARAN MOTORS PVT LTD'],
 ['SOUTH','CALICUT','Indus Motors Co. Pvt. Ltd.'],
 ['SOUTH','CALICUT','A.M. MOTORS'],
+['SOUTH','CALICUT','POPULAR VEHICLES & SERVICES PVT.LTD'],
 ['SOUTH','CHAVAKKAD','Brd Car World Limited'],
 ['SOUTH','COCHIN','Sai Service Station Ltd'],
+['SOUTH','COCHIN','SAI SERVICE PVT LTD'],
+['SOUTH','COCHIN','POPULAR VEHICLES AND SERVICES PVT.LTD'],
 ['SOUTH','COCHIN','Popular Vehicles And Services'],
 ['SOUTH','KANNUR','KVR AUTOMALL (P) LTD.'],
 ['SOUTH','KASARGOD','Kvr Autocars Pvt. Ltd.'],
@@ -391,44 +416,72 @@ var DEALERS = [
 ['SOUTH','PALAKKAD','Indus Motors Co. Pvt. Ltd.'],
 ['SOUTH','PATHANAMTHITTA','Avg Motors Ltd.'],
 ['SOUTH','PERINTHALMANNA','Kvr Autocars Pvt. Ltd.'],
+['SOUTH','PERINTHALMANNA','KVR AUTOMALL (P) LTD.'],
 ['SOUTH','THRISSUR','Indus Motors Co. Pvt. Ltd.'],
+['SOUTH','THRISSUR','BRD CAR WORLD LTD.'],
 ['SOUTH','TRIVANDRUM','Indus Motors Co. Pvt. Ltd.'],
+['SOUTH','TRIVANDRUM','SOUTH PARK MOTORS PRIVATE LIMIT'],
 ['SOUTH','TRIVANDRUM','Sarathy Autocars'],
 ['SOUTH','CHENNAI','A B T Maruti'],
+['SOUTH','CHENNAI','Cars'],
 ['SOUTH','CHENNAI','Khivraj Motors Ltd'],
 ['SOUTH','CHENNAI','Popular Vehicles And Services'],
 ['SOUTH','CHENNAI','Vishnu Cars'],
+['SOUTH','CHENNAI','NEXGEN VENTURES PVT LTD (CRESCO'],
+['SOUTH','CHENNAI','KHIVRAJ MOTORS PVT. LTD'],
+['SOUTH','CHENNAI','POPULAR VEHICLES AND SERVICES PVT LTD'],
+['SOUTH','CHENNAI','PILLAI AND SONS MOTOR COMPANY'],
+['SOUTH','CHENNAI','VISHNU CARS PVT LTD.'],
+['SOUTH','CHENNAI','VISHNU CARS PVT.LTD'],
+['SOUTH','CHENNAI','RAJALAKSHMI CARS PVT TLD'],
+['SOUTH','CHENNAI','ABT LTD'],
 ['SOUTH','COIMBATORE','A B T Maruti'],
 ['SOUTH','COIMBATORE','Sree Saradhambal Automobiles'],
 ['SOUTH','COIMBATORE','Jaikrishnaa Autosales Pvt. Ltd'],
 ['SOUTH','COIMBATORE','Aadhi Cars Pvt Ltd'],
 ['SOUTH','ERODE','Sree Saradhambal Automobiles'],
+['SOUTH','ERODE','SRI CITY AUTO (UNIT OF CITY AUT'],
 ['SOUTH','HOSUR','Sri Amman Cars India Pvt Ltd'],
+['SOUTH','HOSUR','SRI AMMAN CARS INDIA PVT.LTD.'],
 ['SOUTH','KARUR','A B T Maruti'],
 ['SOUTH','MADURAI','A B T Maruti'],
 ['SOUTH','MADURAI','Shiva Automotive'],
+['SOUTH','MADURAI','ASIR AUTOMOBILES PVT. LTD.'],
+['SOUTH','MADURAI','MEENAKSHI AUTOZONE PRIVATE LTD.'],
 ['SOUTH','MAYILADUTHURAI','Pillai & Sons'],
 ['SOUTH','NAGERCOIL','ATHEN CARS'],
 ['SOUTH','PONDICHERRY','Shenbaka'],
+['SOUTH','PONDICHERRY','SHENBAKA CARS PVT.LTD.'],
 ['SOUTH','SALEM','Thriveni Car Company Ltd'],
+['SOUTH','SALEM','S M CAR PRIVATE LTD.'],
+['SOUTH','SALEM','THRIVENI CAR COMPANY PVT LTD'],
+['SOUTH','SALEM','S M CAR PRIVATE LIMITED'],
 ['SOUTH','SIVAKASI','MEENAKSHI AUTO ZONE PVT. LTD.'],
 ['SOUTH','TAMILNADU','A B T Maruti'],
 ['SOUTH','TIRUCHENGODE','Sree Saradhambal Automobiles'],
 ['SOUTH','TIRUNELVELI','Aadhi Cars Pvt Ltd'],
 ['SOUTH','TIRUPUR','Shashti Car Private Ltd.'],
+['SOUTH','TIRUPUR','SHASHTI CAR PVT LTD'],
 ['SOUTH','TRICHY','A B T Maruti'],
 ['SOUTH','TRICHY','Pla Motors'],
 ['SOUTH','TUTICORIN','Asir Automobiles Pvt Ltd'],
 ['SOUTH','VELLORE','Ganesh Cars Pvt Ltd'],
 ['SOUTH','VELLORE','Sri Amman Cars India Pvt Ltd'],
+['SOUTH','VELLORE','GANESH CARS PVT. LTD.'],
 ['NORTH','AMRITSAR','Swani Motors Ltd'],
 ['NORTH','CHANDIGARH','Modern Automobiles'],
+['NORTH','CHANDIGARH','NAVDESH AUTO LLP'],
+['NORTH','CHANDIGARH','NAVDESH AUTOS LLP'],
 ['NORTH','DASUYA','HOSHIARPUR AUTOMOBILES'],
 ['NORTH','FARIDKOT','MAPSKO AUTO INDIA PVT. LTD.'],
 ['NORTH','GURDASPUR','Pathankot Vehicleades Pvt.Ltd.'],
 ['NORTH','JALLANDHAR','Lovely Autos'],
+['NORTH','JALLANDHAR','MARWAHA AUTOS (INDERJIT MARWAHA'],
 ['NORTH','JAMMU','Jamkash Vehicleades Pvt. Ltd.'],
 ['NORTH','LUDHIANA','Lovely Autos'],
+['NORTH','LUDHIANA','GULZAR MOTORS PRIVATE LIMITED'],
+['NORTH','LUDHIANA','HOSHIARPUR AUTOMOBILES'],
+['NORTH','MANDI GOBINDGARH','HOSHIARPUR AUTOMOBILES'],
 ['NORTH','PATIALA','Hira Automobile Private Ltd.'],
 ['NORTH','ROPAR','Cm Autosales Pvt Ltd'],
 ['NORTH','SANGRUR','MAX AUTOMOBILES'],
@@ -437,11 +490,17 @@ var DEALERS = [
 ['NORTH','DELHI','Competent Automobiles Co.Ltd'],
 ['NORTH','DELHI','Rohan Motors Ltd'],
 ['NORTH','DELHI','Magic Auto'],
+['NORTH','DELHI','T.R. SAWHNEY MOTORS PVT LTD'],
 ['NORTH','DELHI','Rana Motors Pvt Ltd'],
 ['NORTH','DELHI','Aaa Vehicleades Pvt Ltd'],
 ['NORTH','DELHI','Prem Motor Pvt Ltd'],
+['NORTH','DELHI','RANA MOTORS PVT. LTD'],
+['NORTH','DELHI','COMPETENT AUTOMOBILES CO. LTD.'],
+['NORTH','DELHI','T R SAWHNEY AUTOMOBILES PVT. LTD.'],
+['NORTH','DELHI','AAA VEHICLEADES PVT LTD.'],
 ['NORTH','NEW DELHI','Aaa Vehicleades Pvt Ltd'],
 ['NORTH','AMBALA','Eakansh Wheels'],
+['NORTH','HAMIRPUR','COMPETENT AUTOMOBILES CO. LTD'],
 ['NORTH','KAITHAL','Eakansh Wheels'],
 ['NORTH','KANGRA','KANGRA VEHICLEADES NEXA'],
 ['NORTH','KARNAL','KARNAL MOTORS PVT. LTD.'],
@@ -450,30 +509,50 @@ var DEALERS = [
 ['NORTH','PEHOWA','Karnal Motors'],
 ['NORTH','SIRSA','Shakti Motors Pvt Ltd'],
 ['NORTH','SONIPAT','Jagmohan Motors Ltd.'],
+['NORTH','HAMIRPUR','Competent Automobiles Co.Ltd'],
+['NORTH','MANDI','COMPETENT AUTOMOBILES CO. LTD.'],
 ['NORTH','SHIMLA','Goyal Motors Pvt. Ltd'],
 ['NORTH','SOLAN','Goyal Motors Pvt. Ltd'],
 ['NORTH','JAMMU','Jammu Motors'],
+['NORTH','JAMMU','JAMMU MOTORS PVT LTD'],
 ['NORTH','BIJNORE','SHAKUMBARI AUTOMOBILES PVT LTD'],
 ['NORTH','BULANDSHAHR','Rohan Motors Ltd'],
 ['NORTH','FARIDABAD','Vipul Motors Limited'],
+['NORTH','FARIDABAD','AUTO NATION (A UNIT OF TAYAL IN'],
+['NORTH','FARIDABAD','VIPUL MOTORS PVT. LTD.'],
 ['NORTH','FARIDABAD','Pasco Automobiles'],
 ['NORTH','GURGAON','Pasco Automobiles'],
 ['NORTH','GURGAON','Rana Motors Pvt Ltd'],
+['NORTH','GURGAON','PREM MOTORS PVT. LTD.'],
 ['NORTH','KOTDWAR','SHAKUMBARI AUTOMOBILES PVT LTD'],
 ['NORTH','MANESAR','PLATINUM MOTOCORP LLP'],
 ['NORTH','REWARI','Dinco 4 Wheels'],
 ['NORTH','ALWAR','M G Motors'],
+['NORTH','ALWAR','FORTUNE CARS(A UNIT OF JYOTI AUTOMOBILES PVT LTD)'],
 ['NORTH','BANSWARA','NAVNEET MOTORS'],
 ['NORTH','BIKANER','Audi Motors (P) Ltd'],
+['NORTH','BIKANER','AUDI MOTORS PVT. LTD.'],
 ['NORTH','CHITTORGARH','Bhatia & Company'],
 ['NORTH','JAIPUR','K P Automotives P.Ltd'],
+['NORTH','JAIPUR','PREM MOTORS PVT. LTD.'],
+['NORTH','JAIPUR','SATNAM MOTOCORP PVT. LTD'],
+['NORTH','JAIPUR','KTL AUTOMOBILE PVT. LTD.'],
+['NORTH','JAIPUR','AURIC MOTORS'],
+['NORTH','JAIPUR','VIPUL MOTORS PVT LTD'],
+['NORTH','JHUNJHUNUN','AUDI MOTORS PVT. LTD.'],
+['NORTH','JHUNJHUNUN','AUDI MOTORS PVT LTD'],
 ['NORTH','KOTA','Bhatia & Company'],
+['NORTH','KOTA','BHATIA & CO. (A UNIT OF BHATIA'],
 ['NORTH','NAGAUR','Shri Mangalam Auto Pvt Ltd'],
+['NORTH','NAGAUR','SHRI MANGALAM AUTO PRIVATE LIM'],
 ['NORTH','SIKAR','Jamu Automobiles Pvt Ltd.'],
+['NORTH','SIKAR','JAMU AUTOMOBILES PVT LTD'],
 ['NORTH','SURATGARH','Audi Motors (P) Ltd'],
 ['NORTH','UDAIPUR','Tecnoy Motors'],
+['NORTH','UDAIPUR','NAVNEET MOTORS'],
 ['NORTH','AGRA','Prem Motor Pvt Ltd'],
 ['NORTH','AGRA','Ktl Pvt Limited'],
+['NORTH','AGRA','PREM MOTORS PVT.LTD.'],
 ['NORTH','ALIGARH','Dev Motors Pvt Ltd'],
 ['NORTH','ALLAHABAD','BRIGHT 4 WHEEL SALES PRAYAGRAJ'],
 ['NORTH','BAREILLY','Coral Motors(P) Ltd.'],
@@ -481,82 +560,130 @@ var DEALERS = [
 ['NORTH','ETAWAH','KULDEEP MOTORS PVT LTD'],
 ['NORTH','GHAZIABAD','Motorcraft Sales Pvt. Ltd'],
 ['NORTH','GORAKHPUR','ARBIT AUTOMOBILES PVT.LTD'],
+['NORTH','GORAKHPUR','SMARTWHEELS PVT LTD'],
+['NORTH','GORAKHPUR','ARBIT AUTO'],
 ['NORTH','HARDOI','CONCEPT CARS LTD'],
 ['NORTH','JHANSI','Deep Motors'],
 ['NORTH','KANPUR','Ktl Pvt Limited'],
 ['NORTH','KANPUR','My Car Pvt. Ltd.'],
+['NORTH','KANPUR','S.B Cars Pvt. Ltd.'],
 ['NORTH','LUCKNOW','ANAND MOTOR AGENCIES LTD'],
 ['NORTH','LUCKNOW','Bright 4 Wheel Sales Private Limite'],
 ['NORTH','LUCKNOW','One Up Motors India Pvt. Ltd.'],
+['NORTH','LUCKNOW','Ktl Pvt Limited'],
+['NORTH','LUCKNOW','MEGA MOTORS (A UNIT OF AKM MIOT'],
+['NORTH','LUCKNOW','KULDEEP MOTORS LUCKNOW PVT LTD'],
 ['NORTH','MATHURA','Uma Motors Pvt Ltd'],
 ['NORTH','MORADABAD','AKANKSHA AUTOMOBILES PVT. LTD.'],
 ['NORTH','NOIDA','Rohan Motors Ltd'],
 ['NORTH','NOIDA','Vipul Motors Limited'],
+['NORTH','NOIDA','VIPUL MOTORS PVT. LTD.'],
+['NORTH','NOIDA','FAIR DEAL PREMIUM WHEELS PVT LT'],
 ['NORTH','SAHARANPUR','ATELIER AUTOMOBILES'],
 ['NORTH','SHAHJAHANPUR','SUMITRA DS MOTORS NEXA'],
 ['NORTH','SITAPUR','Concept Cars Pvt Ltd'],
+['NORTH','BAGESHWAR','Nainital Motors (P) Ltd'],
 ['NORTH','DEHRADUN','Rohan Motors Ltd'],
+['NORTH','DEHRADUN','SHAKUMBARI AUTOWHEELS PRIVATE L'],
+['NORTH','DEHRADUN','DD MOTORS'],
 ['NORTH','ROORKEE','SHAKUMBARI AUTOMOBILES PVT LTD'],
+['NORTH','ROORKEE','SHAKUMBARI AUTOWHEELS PVT. LTD.'],
 ['WEST','AHMEDABAD','Kataria Automobiles Limited'],
 ['WEST','AHMEDABAD','Popular Wheelers (I) Pvt Ltd'],
 ['WEST','AHMEDABAD','Star Line Cars Pvt. Ltd.'],
+['WEST','AHMEDABAD','TANU MOTORS PVT. LTD.'],
+['WEST','AHMEDABAD','KATARIA AUTOMOBILES PVT LTD'],
 ['WEST','ANAND','KATARIA AUTOMOBILES PVT.LTD'],
 ['WEST','BARDOLI','Kataria Automobiles Limited'],
 ['WEST','BHARUCH','Raviratna Motors Pvt. Ltd.'],
 ['WEST','BHAVNAGAR','KATARIA AUTOMOBILES'],
 ['WEST','GANDHI NAGAR','Nanda Automobiles P. Ltd.'],
+['WEST','GANDHI NAGAR','NANDA AUTOMOBILES PVT. LTD.'],
 ['WEST','GODHRA','Rb Cars'],
+['WEST','GODHRA','R.B. CARS PVT.LTD.'],
 ['WEST','JAMNAGAR','ATUL MOTORS JAM LLP'],
 ['WEST','NAVSARI','Kataria Automobiles Limited'],
 ['WEST','RAJKOT','Perfect Auto Service'],
 ['WEST','RAJKOT','Kataria Automobiles Limited'],
 ['WEST','SURAT','Kataria Automobiles Limited'],
+['WEST','SURAT','KIRAN MOTORS LIMITED'],
+['WEST','SURAT','KATARIA AUTOMOBILES PVT LTD'],
 ['WEST','SURENDRANAGAR','Dream Vehicles'],
+['WEST','SURENDRANAGAR','DREAM VEHICLES PVT LTD'],
 ['WEST','UNJHA','Tanu Motors Pvt Ltd'],
 ['WEST','VADODARA','Amar Cars Pvt. Ltd.'],
 ['WEST','VADODARA','Kataria Automobiles Limited'],
+['WEST','VADODARA','RAVIRATNA MOTORS PVT LTD'],
+['WEST','VADODARA','KATARIA AUTOMOBILES PVT LTD'],
 ['WEST','VAPI','KATARIA AUTOMOBILES PVT LTD'],
 ['WEST','AKOLA','Khandelwal Autowheels Pvt Ltd'],
 ['WEST','ALIBAUG','Simran Motors Pvt. Ltd'],
 ['WEST','AURANGABAD','Automotive Manufacturers Ltd'],
+['WEST','AURANGABAD','PAGARIYA AUTO PVT LTD'],
+['WEST','AURANGABAD','AUTOMOTIVE MANUFACTURERS PVT. LTD.'],
 ['WEST','BEED','PAGARIYA AUTO PVT LTD'],
 ['WEST','GOA','Chowgule Industries Pvt Ltd'],
+['WEST','GOA','CHOWGULE INDUSTRIES PVT. LTD.'],
 ['WEST','JALGAON','Manraj Motors'],
 ['WEST','KOLHAPUR','Sai Service Station Ltd'],
 ['WEST','LATUR','Automotive Manufacturers Ltd'],
 ['WEST','MANJRI','Ace Kudale Car Pvt Ltd'],
 ['WEST','NAGPUR','Automotive Manufacturers Ltd'],
 ['WEST','NAGPUR','Seva Automotive Ltd'],
+['WEST','NAGPUR','BARBATE AUTOMOTIVE INDIA PVT. L'],
+['WEST','NAGPUR','ARUN MOTORS PRIVATE LIMITED'],
 ['WEST','NANDED','Seva Automotive Ltd'],
 ['WEST','NASIK','Seva Automotive Ltd'],
+['WEST','NASIK','Automotive Manufacturers Ltd'],
 ['WEST','NASIK','Shaan Cars Pvt. Ltd'],
+['WEST','NASIK','SEVA AUTOMOTIVE PVT LTD'],
 ['WEST','PALUS','Chowgule Industries Pvt Ltd'],
 ['WEST','PANDHARPUR','Chavan Motors Division India P Ltd'],
 ['WEST','PUNE','Sai Service Station Ltd'],
 ['WEST','PUNE','Wonder Cars (P) Ltd'],
 ['WEST','PUNE','Chowgule Industries Pvt Ltd'],
 ['WEST','PUNE','Mahalaxmi Automotives Pvt. Ltd'],
+['WEST','PUNE','EXCELL AUTOVISTA (PVT) LIMITED'],
+['WEST','PUNE','MY CAR (PUNE) PVT. LTD.'],
+['WEST','PUNE','SAI SERVICE PVT. LTD.'],
+['WEST','PUNE','WONDER CARS PVT. LTD.'],
+['WEST','PUNE','SEHGAL AUTORIDERS PVT LTD'],
+['WEST','PUNE','MAHALAXMI AUTOMOTIVES VEHICLES PVT. LTD.'],
 ['WEST','SHRIGONDA','Kankaria Automobiles Pvt Ltd'],
 ['WEST','SOLAPUR','CHAVAN MOTORS DIVISION INDIA PVT.LTD.'],
+['WEST','THANE','EXCELL AUTOVISTA PVT LTD'],
 ['WEST','BHILAI','SPARSH AUTOMOBILES PVT LTD'],
+['WEST','BILASPUR-CG','SATYA AUTO PRIVATE  LIMITED'],
+['WEST','BILASPUR-CG','SATYA AUTO PRIVATE LIMITED'],
 ['WEST','CHHINDWARA','KAMTHI MOTORS LLP'],
 ['WEST','GUNA','Prem Motor Pvt Ltd'],
 ['WEST','GWALIOR','Prem Motor Pvt Ltd'],
+['WEST','GWALIOR','PREM MOTORS PVT. LTD.'],
+['WEST','GWALIOR','NIKUNJ MOTORS (A UNIT OF RSKS A'],
 ['WEST','JABALPUR','MAA GAYATRI AUTOMOBILES'],
 ['WEST','JABALPUR','STANDARD AUTO AGENCIES'],
+['WEST','JABALPUR','STANDARD MOTOCORP PRIVATE LIMIT'],
 ['WEST','KORBA','SATYA AUTO PRIVATE LIMITED'],
 ['WEST','RAIGARH','SATYA AUTO PRIVATE LIMITED'],
 ['WEST','SATNA','City Cars'],
 ['WEST','SHAJAPUR','UNITARA MOTORS PVT LTD'],
+['WEST','KHARGHAR','EXCELL AUTOVISTA (P) LTD'],
+['WEST','KHARGHAR','SIMRAN MOTOR PVT. LTD.'],
 ['WEST','MUMBAI','Sai Service Station Ltd'],
 ['WEST','MUMBAI','Excel Autovista(P) Ltd.'],
+['WEST','MUMBAI','SHIVAM AUTOZONE INDIA PVT. LTD.'],
+['WEST','MUMBAI','VELOX MOTORS (A UNIT OF CARKRAF'],
+['WEST','MUMBAI','KIRAN MOTORS MAHARASHTRA'],
 ['WEST','NAVI MUMBAI','MY CAR (PUNE) PVT LTD'],
 ['WEST','THANE','Navnit Motors Ltd'],
 ['WEST','VASAI','SAI SERVICE PVT LTD'],
 ['EAST','AIZWAL','GIG MOTORS'],
 ['EAST','BONGAIGAON','Bharti Motors'],
+['EAST','BONGAIGAON','BHARATI MOTORS PVT.LTD.'],
 ['EAST','DIBRUGARH','BIMAL AUTO AGENCY'],
+['EAST','DIBRUGARH','VISHAL CAR WORLD PVT LTD'],
 ['EAST','GANGTOK','ENTEL AUTOS'],
+['EAST','Nagaon','R.D.Motors'],
 ['EAST','NAHARLAGUN','D Y MOTORS'],
 ['EAST','SHILLONG','RANI MOTORS'],
 ['EAST','DHANBAD','CAR ONE (A UNIT OF RAJHANS AUT'],
@@ -566,12 +693,14 @@ var DEALERS = [
 ['EAST','JAMSHEDPUR','Motorworld (Unit Of Kalimati Mt)'],
 ['EAST','MUZAFFARPUR','RAMKRSIHNA MOTORS PVT LTD'],
 ['EAST','PATNA','Alankar Auto'],
+['EAST','PATNA','ALANKAR AUTO SALES & SERVICE PVT. LTD.'],
 ['EAST','PURNEA','SEEMANCHAL MOTORS PVT. LTD.'],
 ['EAST','RAMGARH','Hindustan Auto Agency'],
 ['EAST','RANCHI','PREMSONS MOTOR UDYOG PVT.LTD.'],
 ['EAST','ASANSOL','Bee Kay Auto Pvt Ltd'],
 ['EAST','BAHRAMPUR','BEEKAY AUTO PVT LTD'],
 ['EAST','BANKURA','Bhandari Automobiles Pvt. Ltd.'],
+['EAST','BASIRHAT','Bhandari Automobiles Pvt. Ltd.'],
 ['EAST','BURDWAN','Bee Kay Auto Pvt Ltd'],
 ['EAST','DURGAPUR','Sainath Autolink'],
 ['EAST','KHARAGPUR','Bhandari Automobiles Pvt. Ltd.'],
@@ -579,11 +708,16 @@ var DEALERS = [
 ['EAST','KOLKATA','Bhandari Automobiles Pvt. Ltd.'],
 ['EAST','KOLKATA','Sanei Motors Pvt Ltd'],
 ['EAST','KOLKATA','One Up Motors India Pvt. Ltd.'],
+['EAST','KOLKATA','JYOTE MOTORS (BENGAL) PVT. LTD.'],
+['EAST','MADHYAMGRAM','STARBURST MOTORS PVT LTD'],
 ['EAST','RAIGANJ','J K Wheels Pvt. Ltd.'],
 ['EAST','SILIGURI','Bee Kay Auto Pvt Ltd'],
 ['EAST','SILIGURI','Sevoke Motors Pvt. Ltd.'],
 ['EAST','BALASORE','Jyote Motors Private Ltd'],
+['EAST','BALASORE','JYOTE MOTORS (BALASORE) PVT. LTD'],
 ['EAST','BERHAMPUR','Sky Automobiles'],
+['EAST','BHUBANESHWAR','JYOTE MOTORS (BBSR) PVT LTD'],
+['EAST','BHUBANESHWAR','UTKAL AUTO ENTERPRISER PVT.LTD'],
 ['EAST','BHUBANESWAR','Jyote Motors Private Ltd'],
 ['EAST','BHUBANESWAR','Narayani  Motors Pvt. Ltd.'],
 ['EAST','CUTTACK','TUSHI MOTORS  PVT. LTD'],
@@ -592,14 +726,15 @@ var DEALERS = [
 ['EAST','JEYPORE','Legend Cars Pvt. Ltd.'],
 ['EAST','RAIPUR','Sky Automobiles'],
 ['EAST','RAIPUR','Sparsh Auto Pvt Ltd'],
+['EAST','RAIPUR','VISHWABHARTI AUTOMOBILES PVT. L'],
+['EAST','RAIPUR','HDN MOTORS PVT. LTD.'],
+['EAST','RAIPUR','SPARSH AUTOMOBILES (P) LTD'],
 ['EAST','ROURKELA','Orbit Motors Pvt Ltd'],
-['EAST','SAMBHALPUR','Odyssey Motors Pvt. Ltd.'],
-['North','Chennai ','Test']
+['EAST','ROURKELA','ORBIT MOTORS PVT. LTD.'],
+['EAST','SAMBHALPUR','Odyssey Motors Pvt. Ltd.']
 ];
 
-// Load dealers from sheet on startup
-var DEALERS = [];
-fetch(SCRIPT_URL + '?action=dealers').then(function(r){ return r.json(); }).then(function(d){ DEALERS = d; }).catch(function(){});
+// Dealers loaded from master list (new dealers auto-save to sheet on submit)
 
 function dealerSearch(val, prefix) {
   var dd = document.getElementById(prefix+'-outlet-suggestions');
