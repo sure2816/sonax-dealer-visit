@@ -46,6 +46,22 @@
   .ac-item:hover { background:#f3e5f5; }
   .ac-item .ac-name { font-weight:500; color:#202124; }
   .ac-item .ac-loc { font-size:11px; color:#9aa0a6; }
+  .stock-toggle-row { display:flex; align-items:center; justify-content:space-between; padding:10px 12px; background:#f8f9fa; border:1px solid #dadce0; border-radius:6px; cursor:pointer; }
+  .stock-toggle-label { font-size:14px; font-weight:500; color:#202124; }
+  .stock-toggle { width:40px; height:22px; background:#ccc; border-radius:11px; position:relative; transition:background 0.2s; flex-shrink:0; }
+  .stock-toggle.on { background:#673ab7; }
+  .stock-toggle::after { content:''; position:absolute; width:18px; height:18px; background:#fff; border-radius:50%; top:2px; left:2px; transition:left 0.2s; }
+  .stock-toggle.on::after { left:20px; }
+  .stock-section { margin-top:12px; }
+  .stock-label { font-size:11px; font-weight:700; color:#9aa0a6; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:8px; }
+  .sku-table { width:100%; border-collapse:collapse; table-layout:fixed; }
+  .sku-table td { padding:4px 2px; border-bottom:0.5px solid #f0f0f0; vertical-align:middle; }
+  .sku-table tr:last-child td { border-bottom:none; }
+  .sn { width:54px; font-size:12px; font-weight:600; color:#202124; font-family:monospace; white-space:nowrap; }
+  .sq { width:50px; }
+  .sg { width:14px; }
+  .qi { width:46px; text-align:center; padding:3px 2px; border:1px solid #dadce0; border-radius:4px; font-size:12px; color:#202124; background:#fff; -moz-appearance:textfield; appearance:textfield; box-sizing:border-box; }
+  .qi::-webkit-outer-spin-button,.qi::-webkit-inner-spin-button { -webkit-appearance:none; margin:0; }
 </style>
 </head>
 <body>
@@ -124,94 +140,68 @@
           <option>A — Large / High-Potential (Performing)</option>
           <option>B — Large / High-Potential (Dormant)</option>
           <option>C — Small / (Single Person decision)</option>
+          <option>D — Small / (Dormant)</option>
         </select>
         <div class="error-msg">Please select dealer size.</div>
       </div>
       <div class="field-group" id="fg-msil-stage-before">
         <label>Stage before this visit <span class="required">*</span></label>
-        <select id="msil-stage-before">
+        <select id="msil-stage-before" onchange="updateOutcomeOptions('msil')">
           <option value="">-- Select Stage --</option>
-          <option>Stage 4 — Regular buyer</option>
-          <option>Stage 3 — Trial order placed</option>
-          <option>Stage 2 — Demo done / sample given</option>
-          <option>Stage 1 — No interest yet</option>
-          <option>Stage 0 — No business yet</option>
+          <option value="Active">Active</option>
+          <option value="Not Active">Not Active</option>
         </select>
         <div class="error-msg">Please select stage.</div>
       </div>
-      <div class="field-group" id="fg-msil-stage-after">
-        <label>Stage after this visit <span class="required">*</span></label>
-        <select id="msil-stage-after">
-          <option value="">-- Select Stage --</option>
-          <option>Stage 4 — Regular buyer</option>
-          <option>Stage 3 — Trial order placed</option>
-          <option>Stage 2 — Demo done / sample given</option>
-          <option>Stage 1 — No interest yet</option>
-          <option>Stage 0 — No business yet</option>
-        </select>
-        <div class="error-msg">Please select stage.</div>
-      </div>
-      <div class="field-group" id="fg-msil-tactic">
-        <label>Dealer engagement approach (select all that apply) <span class="required">*</span></label>
-        <div class="checkbox-group">
-          <label class="checkbox-item"><input type="checkbox" name="msil-tactic" value="Product demonstration"> Product demonstration</label>
-          <label class="checkbox-item"><input type="checkbox" name="msil-tactic" value="Existing relationship discussion"> Existing relationship discussion</label>
-          <label class="checkbox-item"><input type="checkbox" name="msil-tactic" value="Business performance discussion"> Business performance discussion</label>
-          <label class="checkbox-item"><input type="checkbox" name="msil-tactic" value="Contractor/partner referral"> Contractor/partner referral</label>
-          <label class="checkbox-item"><input type="checkbox" name="msil-tactic" value="MSIL business opportunity"> MSIL business opportunity</label>
-          <label class="checkbox-item"><input type="checkbox" name="msil-tactic" value="Other"> Other</label>
+      <div class="field-group">
+        <div class="stock-toggle-row" onclick="toggleStock('msil')">
+          <span class="stock-toggle-label">📦 Add stock check?</span>
+          <div class="stock-toggle" id="msil-stock-tog"></div>
         </div>
-        <div class="error-msg" id="tactic-error">Please select at least one approach.</div>
+        <div class="stock-section hidden" id="msil-stock-sec">
+          <div class="stock-label">Stock at dealer (qty)</div>
+          <table class="sku-table">
+            <tr><td class="sn">CV-IC3</td><td class="sq"><input class="qi" id="msil-s-cvic3" type="number" min="0" max="10000" placeholder="0"></td><td class="sg"></td><td class="sn">H2-400</td><td class="sq"><input class="qi" id="msil-s-h2400" type="number" min="0" max="10000" placeholder="0"></td></tr>
+            <tr><td class="sn">CV-IC4</td><td class="sq"><input class="qi" id="msil-s-cvic4" type="number" min="0" max="10000" placeholder="0"></td><td class="sg"></td><td class="sn">H2-410</td><td class="sq"><input class="qi" id="msil-s-h2410" type="number" min="0" max="10000" placeholder="0"></td></tr>
+            <tr><td class="sn">CV-TP3</td><td class="sq"><input class="qi" id="msil-s-cvtp3" type="number" min="0" max="10000" placeholder="0"></td><td class="sg"></td><td class="sn">H2-420</td><td class="sq"><input class="qi" id="msil-s-h2420" type="number" min="0" max="10000" placeholder="0"></td></tr>
+            <tr><td class="sn">H2-330</td><td class="sq"><input class="qi" id="msil-s-h2330" type="number" min="0" max="10000" placeholder="0"></td><td class="sg"></td><td class="sn">H2-440</td><td class="sq"><input class="qi" id="msil-s-h2440" type="number" min="0" max="10000" placeholder="0"></td></tr>
+            <tr><td class="sn">H2-350</td><td class="sq"><input class="qi" id="msil-s-h2350" type="number" min="0" max="10000" placeholder="0"></td><td class="sg"></td><td class="sn">H2-450</td><td class="sq"><input class="qi" id="msil-s-h2450" type="number" min="0" max="10000" placeholder="0"></td></tr>
+            <tr><td class="sn">H2-360</td><td class="sq"><input class="qi" id="msil-s-h2360" type="number" min="0" max="10000" placeholder="0"></td><td class="sg"></td><td class="sn">H2-860</td><td class="sq"><input class="qi" id="msil-s-h2860" type="number" min="0" max="10000" placeholder="0"></td></tr>
+            <tr><td class="sn">H2-380</td><td class="sq"><input class="qi" id="msil-s-h2380" type="number" min="0" max="10000" placeholder="0"></td><td class="sg"></td><td class="sn">H3-610</td><td class="sq"><input class="qi" id="msil-s-h3610" type="number" min="0" max="10000" placeholder="0"></td></tr>
+            <tr><td class="sn">H2-390</td><td class="sq"><input class="qi" id="msil-s-h2390" type="number" min="0" max="10000" placeholder="0"></td><td class="sg"></td><td class="sn">H3-670</td><td class="sq"><input class="qi" id="msil-s-h3670" type="number" min="0" max="10000" placeholder="0"></td></tr>
+          </table>
+        </div>
       </div>
       <div class="field-group" id="fg-msil-outcome">
         <label>Visit outcome <span class="required">*</span></label>
         <select id="msil-outcome">
-          <option value="">-- Select Outcome --</option>
-          <option>Repeat order received</option>
-          <option>Order confirmed</option>
-          <option>Product demonstration completed</option>
-          <option>Interest shown — follow-up required</option>
-          <option>Issue resolved</option>
-          <option>No immediate interest</option>
-          <option>Competitor activity observed</option>
-          <option>Other</option>
+          <option value="">-- Select Stage first --</option>
         </select>
         <div class="error-msg">Please select an outcome.</div>
-      </div>
-      <div class="field-group">
-        <label>Visit notes <span style="color:#9aa0a6;font-weight:400;">(optional)</span></label>
-        <textarea id="msil-notes" placeholder="Key observations, objections, competitor activity."></textarea>
       </div>
       <div class="field-group" id="fg-msil-next-action">
         <label>Next planned action <span class="required">*</span></label>
         <select id="msil-next-action">
-          <option value="">-- Select Action --</option>
-          <option>No further action required</option>
-          <option>Follow-up call</option>
-          <option>Schedule next visit</option>
-          <option>Order confirmation</option>
-          <option>Seek RM support</option>
-          <option>Other</option>
+          <option value="">-- Select Stage first --</option>
         </select>
         <div class="error-msg">Please select next action.</div>
+      </div>
+      <div class="field-group">
+        <label>Visit notes <span style="color:#9aa0a6;font-weight:400;">(optional)</span></label>
+        <textarea id="msil-notes" placeholder="Key observations, objections, competitor activity."></textarea>
       </div>
       <div class="field-group" id="fg-msil-contractor">
         <label>Contractor at outlet <span class="required">*</span></label>
         <select id="msil-contractor">
           <option value="">-- Select --</option>
           <option>Active Sonax advocate</option>
-          <option>Contractor trial initiated</option>
-          <option>Met contractor — interest shown</option>
-          <option>Met contractor — no interest</option>
+          <option>Met contractor — Shown interest</option>
+          <option>Met contractor — No interest</option>
           <option>No contractor</option>
-          <option>Follow-up required</option>
+          <option>Follow up</option>
           <option>Other</option>
         </select>
         <div class="error-msg">Please select contractor status.</div>
-      </div>
-      <div class="field-group">
-        <label>Planned follow-up date</label>
-        <input type="date" id="msil-followup-date" />
       </div>
     </div>
   </div>
@@ -248,87 +238,46 @@
           <option>A — Large / High-Potential (Performing)</option>
           <option>B — Large / High-Potential (Dormant)</option>
           <option>C — Small / (Single Person decision)</option>
+          <option>D — Small / (Dormant)</option>
         </select>
         <div class="error-msg">Please select dealer size.</div>
       </div>
       <div class="field-group" id="fg-hyu-stage-before">
         <label>Stage before this visit <span class="required">*</span></label>
-        <select id="hyu-stage-before">
+        <select id="hyu-stage-before" onchange="updateOutcomeOptions('hyu')">
           <option value="">-- Select Stage --</option>
-          <option>Stage 4 — Regular buyer</option>
-          <option>Stage 3 — Trial order placed</option>
-          <option>Stage 2 — Demo done / sample given</option>
-          <option>Stage 1 — No interest yet</option>
-          <option>Stage 0 — No business yet</option>
+          <option value="Active">Active</option>
+          <option value="Not Active">Not Active</option>
         </select>
         <div class="error-msg">Please select stage.</div>
-      </div>
-      <div class="field-group" id="fg-hyu-stage-after">
-        <label>Stage after this visit <span class="required">*</span></label>
-        <select id="hyu-stage-after">
-          <option value="">-- Select Stage --</option>
-          <option>Stage 4 — Regular buyer</option>
-          <option>Stage 3 — Trial order placed</option>
-          <option>Stage 2 — Demo done / sample given</option>
-          <option>Stage 1 — No interest yet</option>
-          <option>Stage 0 — No business yet</option>
-        </select>
-        <div class="error-msg">Please select stage.</div>
-      </div>
-      <div class="field-group" id="fg-hyu-tactic">
-        <label>Dealer engagement approach (select all that apply) <span class="required">*</span></label>
-        <div class="checkbox-group">
-          <label class="checkbox-item"><input type="checkbox" name="hyu-tactic" value="Product demonstration"> Product demonstration</label>
-          <label class="checkbox-item"><input type="checkbox" name="hyu-tactic" value="Existing relationship discussion"> Existing relationship discussion</label>
-          <label class="checkbox-item"><input type="checkbox" name="hyu-tactic" value="Business performance discussion"> Business performance discussion</label>
-          <label class="checkbox-item"><input type="checkbox" name="hyu-tactic" value="Contractor/partner referral"> Contractor/partner referral</label>
-          <label class="checkbox-item"><input type="checkbox" name="hyu-tactic" value="Hyundai business opportunity"> Hyundai business opportunity</label>
-          <label class="checkbox-item"><input type="checkbox" name="hyu-tactic" value="Other"> Other</label>
-        </div>
-        <div class="error-msg" id="hyu-tactic-error">Please select at least one approach.</div>
       </div>
       <div class="field-group" id="fg-hyu-outcome">
         <label>Visit outcome <span class="required">*</span></label>
         <select id="hyu-outcome">
-          <option value="">-- Select Outcome --</option>
-          <option>Repeat order received</option>
-          <option>Order confirmed</option>
-          <option>Product demonstration completed</option>
-          <option>Interest shown — follow-up required</option>
-          <option>Issue resolved</option>
-          <option>No immediate interest</option>
-          <option>Competitor activity observed</option>
-          <option>Other</option>
+          <option value="">-- Select Stage first --</option>
         </select>
         <div class="error-msg">Please select an outcome.</div>
-      </div>
-      <div class="field-group">
-        <label>Visit notes <span style="color:#9aa0a6;font-weight:400;">(optional)</span></label>
-        <textarea id="hyu-notes" placeholder="Key observations, objections, competitor activity."></textarea>
       </div>
       <div class="field-group" id="fg-hyu-next-action">
         <label>Next planned action <span class="required">*</span></label>
         <select id="hyu-next-action">
-          <option value="">-- Select Action --</option>
-          <option>No further action required</option>
-          <option>Follow-up call</option>
-          <option>Schedule next visit</option>
-          <option>Order confirmation</option>
-          <option>Seek RM support</option>
-          <option>Other</option>
+          <option value="">-- Select Stage first --</option>
         </select>
         <div class="error-msg">Please select next action.</div>
+      </div>
+      <div class="field-group">
+        <label>Visit notes <span style="color:#9aa0a6;font-weight:400;">(optional)</span></label>
+        <textarea id="hyu-notes" placeholder="Key observations, objections, competitor activity."></textarea>
       </div>
       <div class="field-group" id="fg-hyu-contractor">
         <label>Contractor at outlet <span class="required">*</span></label>
         <select id="hyu-contractor">
           <option value="">-- Select --</option>
           <option>Active Sonax advocate</option>
-          <option>Contractor trial initiated</option>
-          <option>Met contractor — interest shown</option>
-          <option>Met contractor — no interest</option>
+          <option>Met contractor — Shown interest</option>
+          <option>Met contractor — No interest</option>
           <option>No contractor</option>
-          <option>Follow-up required</option>
+          <option>Follow up</option>
           <option>Other</option>
         </select>
         <div class="error-msg">Please select contractor status.</div>
@@ -336,6 +285,26 @@
       <div class="field-group">
         <label>Planned follow-up date</label>
         <input type="date" id="hyu-followup-date" />
+      </div>
+      <!-- STOCK CHECK -->
+      <div class="field-group">
+        <div class="stock-toggle-row" onclick="toggleStock('hyu')">
+          <span class="stock-toggle-label">📦 Add stock check?</span>
+          <div class="stock-toggle" id="hyu-stock-tog"></div>
+        </div>
+        <div class="stock-section hidden" id="hyu-stock-sec">
+          <div class="stock-label">Stock at dealer (qty)</div>
+          <table class="sku-table">
+            <tr><td class="sn">CV-IC3</td><td class="sq"><input class="qi" id="hyu-s-cvic3" type="number" min="0" max="10000" placeholder="0"></td><td class="sg"></td><td class="sn">H2-400</td><td class="sq"><input class="qi" id="hyu-s-h2400" type="number" min="0" max="10000" placeholder="0"></td></tr>
+            <tr><td class="sn">CV-IC4</td><td class="sq"><input class="qi" id="hyu-s-cvic4" type="number" min="0" max="10000" placeholder="0"></td><td class="sg"></td><td class="sn">H2-410</td><td class="sq"><input class="qi" id="hyu-s-h2410" type="number" min="0" max="10000" placeholder="0"></td></tr>
+            <tr><td class="sn">CV-TP3</td><td class="sq"><input class="qi" id="hyu-s-cvtp3" type="number" min="0" max="10000" placeholder="0"></td><td class="sg"></td><td class="sn">H2-420</td><td class="sq"><input class="qi" id="hyu-s-h2420" type="number" min="0" max="10000" placeholder="0"></td></tr>
+            <tr><td class="sn">H2-330</td><td class="sq"><input class="qi" id="hyu-s-h2330" type="number" min="0" max="10000" placeholder="0"></td><td class="sg"></td><td class="sn">H2-440</td><td class="sq"><input class="qi" id="hyu-s-h2440" type="number" min="0" max="10000" placeholder="0"></td></tr>
+            <tr><td class="sn">H2-350</td><td class="sq"><input class="qi" id="hyu-s-h2350" type="number" min="0" max="10000" placeholder="0"></td><td class="sg"></td><td class="sn">H2-450</td><td class="sq"><input class="qi" id="hyu-s-h2450" type="number" min="0" max="10000" placeholder="0"></td></tr>
+            <tr><td class="sn">H2-360</td><td class="sq"><input class="qi" id="hyu-s-h2360" type="number" min="0" max="10000" placeholder="0"></td><td class="sg"></td><td class="sn">H2-860</td><td class="sq"><input class="qi" id="hyu-s-h2860" type="number" min="0" max="10000" placeholder="0"></td></tr>
+            <tr><td class="sn">H2-380</td><td class="sq"><input class="qi" id="hyu-s-h2380" type="number" min="0" max="10000" placeholder="0"></td><td class="sg"></td><td class="sn">H3-610</td><td class="sq"><input class="qi" id="hyu-s-h3610" type="number" min="0" max="10000" placeholder="0"></td></tr>
+            <tr><td class="sn">H2-390</td><td class="sq"><input class="qi" id="hyu-s-h2390" type="number" min="0" max="10000" placeholder="0"></td><td class="sg"></td><td class="sn">H3-670</td><td class="sq"><input class="qi" id="hyu-s-h3670" type="number" min="0" max="10000" placeholder="0"></td></tr>
+          </table>
+        </div>
       </div>
     </div>
   </div>
@@ -1040,6 +1009,28 @@ function selectCompany(c) {
   document.getElementById("fg-company").classList.remove("has-error");
 }
 
+var activeOutcomes = ['Place orders for Existing Item','Have stock of Existing Item','Bulk deal / Big order push','New products discussed / ordered','To follow up','Competitor Activity noticed','Others','Take RM support'];
+var inactiveOutcomes = ['Agreed to start business','Trial order placed','Big order discussed','Yet to agree / confirm order','To follow up','Competitor Activity noticed','Others','Take RM support'];
+var activeActions = ['No action needed','Follow up for orders','Demo planned for a new product','Other activities'];
+var inactiveActions = ['No action','Follow up for orders','Demo for new product','Other activity'];
+
+function updateOutcomeOptions(prefix) {
+  var stage = document.getElementById(prefix+'-stage-before').value;
+  var outcomes = stage==='Active' ? activeOutcomes : inactiveOutcomes;
+  var actions = stage==='Active' ? activeActions : inactiveActions;
+  var oSel = document.getElementById(prefix+'-outcome');
+  var aSel = document.getElementById(prefix+'-next-action');
+  oSel.innerHTML = '<option value="">-- Select Outcome --</option>' + outcomes.map(function(o){return'<option>'+o+'</option>';}).join('');
+  aSel.innerHTML = '<option value="">-- Select Action --</option>' + actions.map(function(a){return'<option>'+a+'</option>';}).join('');
+}
+
+function toggleStock(prefix) {
+  var tog = document.getElementById(prefix+'-stock-tog');
+  var sec = document.getElementById(prefix+'-stock-sec');
+  tog.classList.toggle('on');
+  sec.classList.toggle('hidden');
+}
+
 function chk(id, fgId) {
   var el = document.getElementById(id), fg = document.getElementById(fgId);
   if (!el || !el.value.trim()) { fg.classList.add("has-error"); return false; }
@@ -1057,33 +1048,38 @@ function validate() {
   }
   if (selectedCompany === "MSIL") {
     ["msil-outlet","msil-sw","msil-location","msil-bucket","msil-stage-before",
-     "msil-stage-after","msil-outcome","msil-next-action","msil-contractor"
+     "msil-outcome","msil-next-action","msil-contractor"
     ].forEach(function(id) { if (!chk(id,"fg-"+id)) ok = false; });
-    var t = document.querySelectorAll('input[name="msil-tactic"]:checked');
-    if (!t.length) {
-      document.getElementById("fg-msil-tactic").classList.add("has-error");
-      document.getElementById("tactic-error").style.display = "block";
-      ok = false;
-    } else {
-      document.getElementById("fg-msil-tactic").classList.remove("has-error");
-      document.getElementById("tactic-error").style.display = "none";
-    }
   }
   if (selectedCompany === "Hyundai") {
     ["hyu-outlet","hyu-sw","hyu-location","hyu-bucket","hyu-stage-before",
-     "hyu-stage-after","hyu-outcome","hyu-next-action","hyu-contractor"
+     "hyu-outcome","hyu-next-action","hyu-contractor"
     ].forEach(function(id) { if (!chk(id,"fg-"+id)) ok = false; });
-    var ht = document.querySelectorAll('input[name="hyu-tactic"]:checked');
-    if (!ht.length) {
-      document.getElementById("fg-hyu-tactic").classList.add("has-error");
-      document.getElementById("hyu-tactic-error").style.display = "block";
-      ok = false;
-    } else {
-      document.getElementById("fg-hyu-tactic").classList.remove("has-error");
-      document.getElementById("hyu-tactic-error").style.display = "none";
-    }
   }
   return ok;
+}
+
+function getStockData(prefix) {
+  var tog = document.getElementById(prefix+'-stock-tog');
+  if (!tog || !tog.classList.contains('on')) return null;
+  return {
+    'CV-IC3': document.getElementById(prefix+'-s-cvic3').value||'',
+    'CV-IC4': document.getElementById(prefix+'-s-cvic4').value||'',
+    'CV-TP3': document.getElementById(prefix+'-s-cvtp3').value||'',
+    'H2-330': document.getElementById(prefix+'-s-h2330').value||'',
+    'H2-350': document.getElementById(prefix+'-s-h2350').value||'',
+    'H2-360': document.getElementById(prefix+'-s-h2360').value||'',
+    'H2-380': document.getElementById(prefix+'-s-h2380').value||'',
+    'H2-390': document.getElementById(prefix+'-s-h2390').value||'',
+    'H2-400': document.getElementById(prefix+'-s-h2400').value||'',
+    'H2-410': document.getElementById(prefix+'-s-h2410').value||'',
+    'H2-420': document.getElementById(prefix+'-s-h2420').value||'',
+    'H2-440': document.getElementById(prefix+'-s-h2440').value||'',
+    'H2-450': document.getElementById(prefix+'-s-h2450').value||'',
+    'H2-860': document.getElementById(prefix+'-s-h2860').value||'',
+    'H3-610': document.getElementById(prefix+'-s-h3610').value||'',
+    'H3-670': document.getElementById(prefix+'-s-h3670').value||''
+  };
 }
 
 function submitForm() {
@@ -1099,28 +1095,26 @@ function submitForm() {
   btn.disabled = true;
   btn.textContent = "Submitting...";
 
-  var tactics = selectedCompany==="MSIL"
-    ? Array.from(document.querySelectorAll('input[name="msil-tactic"]:checked')).map(function(c){return c.value;}).join(", ")
-    : Array.from(document.querySelectorAll('input[name="hyu-tactic"]:checked')).map(function(c){return c.value;}).join(", ");
-
+  var p = selectedCompany==="MSIL" ? "msil" : "hyu";
   var nameVal = document.getElementById("name").value;
   var data = {
     name: nameVal,
     region: regionMap[nameVal] || "",
     visitDate: document.getElementById("visit-date").value,
     company: selectedCompany,
-    outlet: selectedCompany==="MSIL" ? document.getElementById("msil-outlet").value : document.getElementById("hyu-outlet").value,
-    sw: selectedCompany==="MSIL" ? document.getElementById("msil-sw").value : document.getElementById("hyu-sw").value,
-    location: selectedCompany==="MSIL" ? document.getElementById("msil-location").value : document.getElementById("hyu-location").value,
-    bucket: selectedCompany==="MSIL" ? document.getElementById("msil-bucket").value : document.getElementById("hyu-bucket").value,
-    stageBefore: selectedCompany==="MSIL" ? document.getElementById("msil-stage-before").value : document.getElementById("hyu-stage-before").value,
-    stageAfter: selectedCompany==="MSIL" ? document.getElementById("msil-stage-after").value : document.getElementById("hyu-stage-after").value,
-    tactic: tactics,
-    outcome: selectedCompany==="MSIL" ? document.getElementById("msil-outcome").value : document.getElementById("hyu-outcome").value,
-    notes: selectedCompany==="MSIL" ? document.getElementById("msil-notes").value : document.getElementById("hyu-notes").value,
-    nextAction: selectedCompany==="MSIL" ? document.getElementById("msil-next-action").value : document.getElementById("hyu-next-action").value,
-    contractor: selectedCompany==="MSIL" ? document.getElementById("msil-contractor").value : document.getElementById("hyu-contractor").value,
-    followupDate: selectedCompany==="MSIL" ? document.getElementById("msil-followup-date").value : document.getElementById("hyu-followup-date").value
+    outlet: document.getElementById(p+'-outlet').value,
+    sw: document.getElementById(p+'-sw').value,
+    location: document.getElementById(p+'-location').value,
+    bucket: document.getElementById(p+'-bucket').value,
+    stageBefore: document.getElementById(p+'-stage-before').value,
+    stageAfter: "",
+    tactic: "",
+    outcome: document.getElementById(p+'-outcome').value,
+    notes: document.getElementById(p+'-notes').value,
+    nextAction: document.getElementById(p+'-next-action').value,
+    contractor: document.getElementById(p+'-contractor').value,
+    followupDate: document.getElementById(p+'-followup-date').value,
+    stock: selectedCompany==="MSIL" ? getStockData('msil') : null
   };
 
   fetch(SCRIPT_URL, {
@@ -1150,13 +1144,15 @@ function clearForm() {
   document.getElementById("btn-hyundai").className = "company-btn";
   document.getElementById("msil-section").classList.add("hidden");
   document.getElementById("hyundai-section").classList.add("hidden");
-  ["msil-outlet","msil-sw","msil-location","msil-bucket","msil-stage-before","msil-stage-after",
+  ["msil-outlet","msil-sw","msil-location","msil-bucket","msil-stage-before",
    "msil-outcome","msil-notes","msil-next-action","msil-contractor","msil-followup-date",
-   "hyu-outlet","hyu-sw","hyu-location","hyu-bucket","hyu-stage-before","hyu-stage-after",
+   "hyu-outlet","hyu-sw","hyu-location","hyu-bucket","hyu-stage-before",
    "hyu-outcome","hyu-notes","hyu-next-action","hyu-contractor","hyu-followup-date"
   ].forEach(function(id) { var el=document.getElementById(id); if(el) el.value=""; });
-  document.querySelectorAll('input[name="msil-tactic"]').forEach(function(cb){ cb.checked=false; });
-  document.querySelectorAll('input[name="hyu-tactic"]').forEach(function(cb){ cb.checked=false; });
+  // Reset stock toggle
+  var st = document.getElementById('msil-stock-tog');
+  if (st && st.classList.contains('on')) { st.classList.remove('on'); document.getElementById('msil-stock-sec').classList.add('hidden'); }
+  document.querySelectorAll('.qi').forEach(function(el){ el.value=""; });
   document.querySelectorAll(".has-error").forEach(function(el){ el.classList.remove("has-error"); });
   window.scrollTo(0,0);
 }
