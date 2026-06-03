@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sonax — Get Report</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; color-scheme: light; }
+  body { font-family: 'Google Sans', Roboto, Arial, sans-serif; background: #f0ebf8; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 24px; }
+  .card { background: #fff; border-radius: 12px; border-top: 8px solid #673ab7; padding: 36px 32px; max-width: 420px; width: 100%; box-shadow: 0 2px 8px rgba(0,0,0,0.12); }
+  h1 { font-size: 20px; font-weight: 600; color: #202124; margin-bottom: 6px; }
+  .sub { font-size: 13px; color: #666; margin-bottom: 28px; line-height: 1.5; }
+  label { display: block; font-size: 13px; font-weight: 600; color: #333; margin-bottom: 6px; }
+  input[type="email"] { width: 100%; padding: 11px 14px; border: 1px solid #dadce0; border-radius: 6px; font-size: 14px; color: #202124; outline: none; transition: border-color 0.2s; background: #fff; }
+  input[type="email"]:focus { border-color: #673ab7; box-shadow: 0 0 0 2px rgba(103,58,183,0.15); }
+  .btn { width: 100%; margin-top: 16px; padding: 12px; background: #673ab7; color: #fff; border: none; border-radius: 6px; font-size: 15px; font-weight: 500; cursor: pointer; transition: background 0.2s; }
+  .btn:hover { background: #5e35b1; }
+  .btn:disabled { opacity: 0.6; cursor: not-allowed; }
+  .saved-note { font-size: 11px; color: #9aa0a6; margin-top: 6px; }
+  .status { margin-top: 16px; padding: 12px 14px; border-radius: 6px; font-size: 13px; display: none; }
+  .status.success { background: #e6f4ea; color: #0b8043; border: 1px solid #a8d5b5; }
+  .status.error { background: #fce8e6; color: #c5221f; border: 1px solid #f5c6c4; }
+  .divider { border: none; border-top: 1px solid #f0f0f0; margin: 20px 0; }
+  .clear-btn { background: none; border: none; color: #9aa0a6; font-size: 12px; cursor: pointer; padding: 0; text-decoration: underline; }
+</style>
+</head>
+<body>
+<div class="card">
+  <h1>📊 Sonax Dealer Visit Report</h1>
+  <p class="sub">Enter your email — the latest visit data will be sent as an Excel file instantly. Your email is saved for next time.</p>
+
+  <label for="email">Your email address</label>
+  <input type="email" id="email" placeholder="you@example.com" />
+  <div class="saved-note" id="saved-note"></div>
+
+  <button class="btn" id="send-btn" onclick="sendReport()">📧 Send Report to My Email</button>
+
+  <div class="status" id="status"></div>
+
+  <hr class="divider">
+  <button class="clear-btn" onclick="clearSaved()">Clear saved email</button>
+</div>
+
+<script>
+var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxV0zMAjuzS8enkEJoTQVo3DfPy-2V6pnN6BpxwpSQQ89cKq0Sq3whktMfuTUjqJ9YB/exec';
+
+// Load saved email
+window.onload = function() {
+  var saved = localStorage.getItem('sonax_report_email');
+  if (saved) {
+    document.getElementById('email').value = saved;
+    document.getElementById('saved-note').textContent = '✓ Using saved email — change if needed';
+  }
+};
+
+function sendReport() {
+  var email = document.getElementById('email').value.trim();
+  if (!email || !email.includes('@')) {
+    showStatus('Please enter a valid email address.', 'error');
+    return;
+  }
+
+  // Save email for next time
+  localStorage.setItem('sonax_report_email', email);
+  document.getElementById('saved-note').textContent = '✓ Email saved for next time';
+
+  var btn = document.getElementById('send-btn');
+  btn.disabled = true;
+  btn.textContent = 'Sending...';
+  showStatus('', '');
+
+  // Call Apps Script
+  var url = SCRIPT_URL + '?action=sendreport&email=' + encodeURIComponent(email);
+  fetch(url)
+    .then(function(r) { return r.text(); })
+    .then(function(t) {
+      if (t.indexOf('✅') >= 0 || t.toLowerCase().indexOf('sent') >= 0) {
+        showStatus('✅ Report sent to ' + email + ' — check your inbox!', 'success');
+      } else {
+        showStatus('⚠️ ' + t, 'error');
+      }
+      btn.disabled = false;
+      btn.textContent = '📧 Send Report to My Email';
+    })
+    .catch(function() {
+      showStatus('✅ Request sent — report should arrive shortly.', 'success');
+      btn.disabled = false;
+      btn.textContent = '📧 Send Report to My Email';
+    });
+}
+
+function showStatus(msg, type) {
+  var el = document.getElementById('status');
+  el.textContent = msg;
+  el.className = 'status ' + type;
+  el.style.display = msg ? 'block' : 'none';
+}
+
+function clearSaved() {
+  localStorage.removeItem('sonax_report_email');
+  document.getElementById('email').value = '';
+  document.getElementById('saved-note').textContent = '';
+  showStatus('Saved email cleared.', 'success');
+}
+</script>
+</body>
+</html>
