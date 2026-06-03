@@ -1155,4 +1155,11 @@ function clearForm() {
    "hyu-outlet","hyu-sw","hyu-location","hyu-bucket","hyu-stage-before","hyu-stage-after",
    "hyu-outcome","hyu-notes","hyu-next-action","hyu-contractor","hyu-followup-date"
   ].forEach(function(id) { var el=document.getElementById(id); if(el) el.value=""; });
-  document.quer
+  document.querySelectorAll('input[name="msil-tactic"]').forEach(function(cb){ cb.checked=false; });
+  document.querySelectorAll('input[name="hyu-tactic"]').forEach(function(cb){ cb.checked=false; });
+  document.querySelectorAll(".has-error").forEach(function(el){ el.classList.remove("has-error"); });
+  window.scrollTo(0,0);
+}
+</script>
+</body>
+</html>
